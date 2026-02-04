@@ -119,10 +119,19 @@ app.add_middleware(
 # 4. PRE-FLIGHT HANDLER
 # ==============================================================================
 
+@app.get("/")
+async def root_gateway():
+    return {
+        "status": "ONLINE",
+        "node": "TITAN-INDUSTRIAL-CORE",
+        "version": "29.2.0",
+        "message": "Sovereign Gateway is active. Point HUD to /api/v1"
+    }
+
+# Ensure your existing options handler stays below it
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(request: Request, rest_of_path: str):
     return {}
-
 
 # ==============================================================================
 # 5. ROUTER REGISTRATION
