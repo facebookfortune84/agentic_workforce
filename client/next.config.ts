@@ -1,15 +1,14 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
+
 const nextConfig = {
-  // Bypasses the strict checks that usually kill the Vercel build
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  /* config options here */
   eslint: {
+    // This ignores linting errors during build so the deployment doesn't fail
     ignoreDuringBuilds: true,
   },
-  // Ensures compatibility with the Sovereign Gateway
-  async rewrites() {
-    return [];
+  typescript: {
+    // This ignores type errors during build for faster deployment
+    ignoreBuildErrors: true,
   },
 };
 

@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "public": true,
+  "buildCommand": "cd client && npm install && npm run build",
+  "installCommand": "cd client && npm install",
+  "devCommand": "cd client && npm run dev",
+  "framework": "nextjs"
+}
