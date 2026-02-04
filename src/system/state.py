@@ -1,4 +1,4 @@
-﻿"""
+"""
 REALM FORGE: SOVEREIGN STATE BEDROCK v20.0
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - IDEMPOTENCY LOCKS - BENTO-GRID TELEMETRY
@@ -10,10 +10,6 @@ import uuid
 from datetime import datetime
 from typing import Annotated, List, Dict, Any, TypedDict, Union, Optional, Set
 from langchain_core.messages import BaseMessage
-from src.system.state import get_initial_state
-from src.system.state import RealmForgeState
-
-state = get_initial_state()
 
 # ==============================================================================
 # 0. REDUCER LOGIC (KINETIC STATE SYNCHRONIZATION)

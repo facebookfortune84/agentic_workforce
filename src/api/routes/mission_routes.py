@@ -11,7 +11,7 @@ from src.api.dependencies.security import get_license
 from src.api.schemas.mission_schema import MissionRequest
 from src.system.connection_manager import manager
 from src.system.config import logger, log_contribution
-from src.system.state import get_initial_state
+from src.system.state import get_initial_state, RealmForgeState
 from src.system.billing.usage_tracker import UsageTracker
 from src.utils.id_generator import generate_mission_id
 from src.system.arsenal.registry import (
