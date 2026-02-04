@@ -1,0 +1,92 @@
+# ==============================================================================
+# REALM FORGE: SOVEREIGN REPOSITORY SHIELD v45.0
+# ==============================================================================
+
+# --- 1. THE CROWN JEWELS (SECRET DATA) ---
+.env
+.env.local
+.env.*.local
+data/security/
+data/security/licenses.db
+*.pem
+*.key
+
+# --- 2. THE NEURAL LATTICE (HEAVY DATA) ---
+# We do not push the 13k+ nodes; we push the code to generate them.
+data/chroma_db/
+data/memory/neural_graph.json
+data/memory/decisions.log
+data/memory/*.json
+data/workforce_audit.csv
+
+# --- 3. PHYSICAL INFRASTRUCTURE (DOCKER/WSL JUNK) ---
+# Prevents the 500-error pipe data from bloating the cloud
+infrastructure/mattermost/volumes/
+infrastructure/rocketchat/data/
+**/data/db/
+**/data/logs/
+
+# --- 4. WORKFORCE BACKUPS ---
+# We only want the primary DNA in data/agents, not the thousands of backups
+data/backups/
+**/~$*
+
+# --- 5. SENSORY OUTPUTS (GENERATED ASSETS) ---
+data/audio/*.mp3
+data/audio/*.wav
+data/assets/images/*.png
+data/assets/images/*.svg
+data/assets/video/*.mp4
+
+# --- 6. PYTHON ARCHITECTURE ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- 7. VIRTUAL ENVIRONMENTS ---
+.venv
+venv/
+ENV/
+env/
+forge_env/
+conda_env/
+
+# --- 8. FRONTEND INFRASTRUCTURE (NEXT.JS) ---
+node_modules/
+client/node_modules/
+client/.next/
+client/out/
+client/build/
+.vercel
+.next-boost
+
+# --- 9. OS & IDE JUNK ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.bak

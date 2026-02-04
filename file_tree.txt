@@ -1,0 +1,151 @@
+agentic-workforce/
+│
+├── README.md
+├── LICENSE
+├── pyproject.toml
+├── requirements.txt
+├── .env.example
+├── .gitignore
+│
+├── src/
+│   ├── main.py
+│   ├── app.py
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── secrets_manager.py
+│   │   ├── logging_config.py
+│   │   └── environment.py
+│   │
+│   ├── api/
+│   │   ├── routes/
+│   │   │   ├── missions.py
+│   │   │   ├── agents.py
+│   │   │   ├── tools.py
+│   │   │   ├── billing.py
+│   │   │   ├── auth.py
+│   │   │   └── health.py
+│   │   ├── middleware/
+│   │   │   ├── auth_middleware.py
+│   │   │   ├── rate_limit.py
+│   │   │   └── request_logger.py
+│   │   └── schemas/
+│   │       ├── mission_schema.py
+│   │       ├── agent_schema.py
+│   │       ├── tool_schema.py
+│   │       ├── billing_schema.py
+│   │       └── auth_schema.py
+│   │
+│   ├── agents/
+│   │   ├── base_agent.py
+│   │   ├── agent_registry.py
+│   │   ├── guardian_agent.py
+│   │   ├── planner_agent.py
+│   │   ├── executor_agent.py
+│   │   ├── researcher_agent.py
+│   │   ├── writer_agent.py
+│   │   ├── analyst_agent.py
+│   │   ├── accountant_agent.py
+│   │   └── hr_agent.py
+│   │
+│   ├── tools/
+│   │   ├── base_tool.py
+│   │   ├── tool_registry.py
+│   │   ├── web_search.py
+│   │   ├── browser_automation.py
+│   │   ├── file_manager.py
+│   │   ├── vector_store.py
+│   │   ├── embeddings.py
+│   │   ├── crm_client.py
+│   │   ├── stripe_client.py
+│   │   ├── shopify_client.py
+│   │   ├── github_client.py
+│   │   └── email_sender.py
+│   │
+│   ├── missions/
+│   │   ├── mission_engine.py
+│   │   ├── mission_registry.py
+│   │   ├── mission_plans/
+│   │   │   ├── research_plan.yaml
+│   │   │   ├── content_plan.yaml
+│   │   │   ├── automation_plan.yaml
+│   │   │   ├── crm_sync_plan.yaml
+│   │   │   └── billing_plan.yaml
+│   │   └── mission_templates/
+│   │       ├── grant_discovery.yaml
+│   │       ├── seo_campaign.yaml
+│   │       ├── outreach_pipeline.yaml
+│   │       ├── product_launch.yaml
+│   │       └── data_cleanup.yaml
+│   │
+│   ├── orchestration/
+│   │   ├── router.py
+│   │   ├── planner.py
+│   │   ├── executor.py
+│   │   ├── validator.py
+│   │   ├── sandbox.py
+│   │   ├── context_builder.py
+│   │   └── event_bus.py
+│   │
+│   ├── billing/
+│   │   ├── ledger.py
+│   │   ├── invoice_generator.py
+│   │   ├── cost_model.py
+│   │   ├── agent_compensation.py
+│   │   ├── usage_tracker.py
+│   │   └── audit_trail.py
+│   │
+│   ├── auth/
+│   │   ├── jwt_manager.py
+│   │   ├── api_keys.py
+│   │   ├── oauth_providers.py
+│   │   └── permissions.py
+│   │
+│   ├── data/
+│   │   ├── logs/
+│   │   │   ├── system.log
+│   │   │   ├── missions.log
+│   │   │   ├── billing.log
+│   │   │   └── errors.log
+│   │   ├── ledger/
+│   │   │   ├── mission_history.csv
+│   │   │   ├── billing_history.csv
+│   │   │   └── agent_earnings.csv
+│   │   ├── vector_store/
+│   │   └── cache/
+│   │
+│   ├── utils/
+│   │   ├── hashing.py
+│   │   ├── time_utils.py
+│   │   ├── id_generator.py
+│   │   ├── retry.py
+│   │   ├── file_utils.py
+│   │   └── text_cleaner.py
+│   │
+│   └── ui/
+│       ├── static/
+│       ├── templates/
+│       ├── components/
+│       └── dashboard/
+│           ├── mission_view.py
+│           ├── agent_view.py
+│           ├── billing_view.py
+│           └── logs_view.py
+│
+├── tests/
+│   ├── test_agents.py
+│   ├── test_tools.py
+│   ├── test_missions.py
+│   ├── test_billing.py
+│   ├── test_api.py
+│   └── test_auth.py
+│
+└── docs/
+    ├── architecture.md
+    ├── agents.md
+    ├── tools.md
+    ├── missions.md
+    ├── billing.md
+    ├── api_reference.md
+    ├── deployment.md
+    └── security.md
+
