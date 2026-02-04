@@ -1,21 +1,19 @@
 @echo off
-title REALM FORGE IGNITION
-echo 🌀 Awakening Sovereign System...
+title REALM FORGE SOVEREIGN IGNITION
+echo 🌀 Preparing Industrial Package Structure...
 
-:: 1. Generate Missing __init__ files
+:: Recursively create __init__.py files where missing
 for /r "src" %%d in (.) do (
-    if not exist "%%d\__init__.py" type nul > "%%d\__init__.py"
+    if not exist "%%d\__init__.py" (
+        echo. > "%%d\__init__.py"
+    )
 )
 
-:: 2. Run Industrial Validator
-echo 🔍 Auditing 1,100+ Agent Manifests...
+echo ✅ Package Structure Regulated.
+echo 🔍 Running Workforce Validator...
 python -m src.orchestration.validator
 
-:: 3. Launch Backend
-echo 🚀 Igniting Sovereign Gateway on Port 8000...
-start cmd /k "uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload"
-
-:: 4. Launch Tunnel (Ngrok)
-echo 🌀 Start your ngrok tunnel in a new window: ngrok http 8000
-echo ✅ System is live.
+echo 🚀 Starting Sovereign Gateway...
+:: Note: Using src.app:app because our root is F:\agentic_workforce
+uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload
 pause
