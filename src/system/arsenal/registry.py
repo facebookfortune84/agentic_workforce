@@ -53,13 +53,25 @@ def import_silo_modules() -> List[Any]:
     return imported
 
 
-def discover_tools() -> List[Callable]:
-    """Extracts all functions decorated with @tool from all silo modules."""
+def discover_tools() -> List[Any]:
+    """
+    Extracts all LangChain tool objects or custom-flagged tools from silo modules.
+    v31.12: Updated to detect LangChain StructuredTool objects.
+    """
     tools = []
     for module in import_silo_modules():
-        for _, obj in inspect.getmembers(module, inspect.isfunction):
-            if hasattr(obj, "is_tool") and obj.is_tool:
-                tools.append(obj)
+        # inspect.getmembers(module) gets everything (functions, classes, objects)
+        for name, obj in inspect.getmembers(module):
+            # Check for LangChain tool signature or custom is_tool flag
+            is_lc_tool = hasattr(obj, "name") and hasattr(obj, "description")
+            is_custom_tool = hasattr(obj, "is_tool") and obj.is_tool
+            
+            if is_lc_tool or is_custom_tool:
+                # Deduplicate based on the tool name
+                t_name = getattr(obj, "name", getattr(obj, "tool_name", name))
+                if not any(getattr(existing, "name", "") == t_name for existing in tools):
+                    tools.append(obj)
+                    
     logger.info(f"[ARSENAL_DISCOVERY] Total tools discovered: {len(tools)}")
     return tools
 
@@ -104,15 +116,17 @@ def get_swarm_roster() -> List[Dict[str, Any]]:
 
 
 async def execute_tool(tool_name: str, **kwargs) -> Any:
-    """
-    Unified execution interface.
-    Automatically handles async/sync tools.
-    """
+    """Unified execution interface for LangChain tools."""
     for t in ALL_TOOLS_LIST:
-        if getattr(t, "tool_name", t.__name__) == tool_name:
-            if inspect.iscoroutinefunction(t):
-                return await t(**kwargs)
-            return t(**kwargs)
+        # Check LangChain '.name' attribute
+        if getattr(t, "name", getattr(t, "tool_name", "")) == tool_name:
+            try:
+                # LangChain tools use .ainvoke for async calls
+                if hasattr(t, "ainvoke"):
+                    return await t.ainvoke(kwargs)
+                return t.run(kwargs)
+            except Exception as e:
+                return f"[ERROR] Execution failed for {tool_name}: {str(e)}"
     return f"[ERROR] Tool '{tool_name}' not found."
 
 

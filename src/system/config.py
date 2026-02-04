@@ -20,6 +20,7 @@ SECURITY_DIR = DATA_ROOT / "security"
 # Workspace roots
 WORKSPACE_ROOT = ROOT_DIR / "RealmWorkspaces"
 STATIC_DIR = ROOT_DIR / "static"
+STATIC_PATH = STATIC_DIR  # Add this line to fix the app.py import error
 
 # Ensure directories exist
 LOGS_DIR.mkdir(parents=True, exist_ok=True)

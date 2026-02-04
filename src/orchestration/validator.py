@@ -15,7 +15,7 @@ logger = logging.getLogger("Validator")
 def validate_workforce_integrity():
     """Forensic audit of all agents and their assigned tools."""
     agents = discover_agents(force_reload=True)
-    arsenal_names = {getattr(t, "tool_name", t.__name__) for t in ALL_TOOLS_LIST}
+    arsenal_names = {getattr(t, "name", getattr(t, "tool_name", t.__name__)) for t in ALL_TOOLS_LIST}
     
     report = {
         "total_agents": len(agents),
