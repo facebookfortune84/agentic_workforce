@@ -12,15 +12,17 @@ import json
 # Root anchor
 ROOT_DIR = Path("F:/agentic_workforce")
 DATA_ROOT = ROOT_DIR / "data"
+BASE_PATH = DATA_ROOT  # <--- ADD THIS LINE (Fixes STT routes)
+
 GRAPH_PATH = DATA_ROOT / "lattice" / "neural_graph.json"
 LATTICE_PATH = DATA_ROOT / "lattice" / "department_lattice.json"
 LOGS_DIR = DATA_ROOT / "logs"
 SECURITY_DIR = DATA_ROOT / "security"
 
 # Workspace roots
-WORKSPACE_ROOT = ROOT_DIR / "RealmWorkspaces"
+WORKSPACE_ROOT = Path("F:/RealmWorkspaces")
 STATIC_DIR = ROOT_DIR / "static"
-STATIC_PATH = STATIC_DIR  # Add this line to fix the app.py import error
+STATIC_PATH = STATIC_DIR # (Fixes app.py mount)
 
 # Ensure directories exist
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
@@ -66,3 +68,4 @@ def log_contribution(agent: str, dept: str, mission_id: str, summary: str) -> No
     }
     with open(AUDIT_LEDGER_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record) + "\n")
+
