@@ -42,6 +42,17 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # 2. DATA MODELS
 # ==============================================================================
 
+class GithubTokenRequest(BaseModel):
+    """Handles incoming GitHub OAuth code exchange."""
+    code: str
+    state: Optional[str] = None
+
+class UserResponse(BaseModel):
+    """Standardized User Profile for the HUD."""
+    id: str
+    username: str
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
 class License(BaseModel):
     """Sovereign License Model for Pydantic v2 validation."""
     key: str
