@@ -224,3 +224,4 @@ async def write_csv_report(filename: str, data_json: str):
         return f"✅ [CSV_SAVED]: Ledger committed to {target}"
     except Exception as e:
         return f"[ERROR] CSV Generation Failed: {str(e)}"
+

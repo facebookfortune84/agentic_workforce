@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: RESILIENCE DECORATORS v1.0
 PURPOSE: Handles LLM rate limits and Tool timeouts with UI telemetry.
 PATH: F:/agentic_workforce/src/utils/retry_logic.py
@@ -34,7 +34,7 @@ def industrial_retry(
                 except Exception as e:
                     attempt += 1
                     if attempt >= retries:
-                        logger.error(f"❌ [CRITICAL_FAULT] {func.__name__} failed after {retries} attempts: {e}")
+                        logger.error(f"âŒ [CRITICAL_FAULT] {func.__name__} failed after {retries} attempts: {e}")
                         await manager.broadcast({
                             "type": "diagnostic",
                             "text": f"CRITICAL FAULT: {silo_context} operation failed permanently.",
@@ -43,7 +43,7 @@ def industrial_retry(
                         raise e
                     
                     # Notify UI of the retry
-                    logger.warning(f"⚠️ [RETRY] {func.__name__} attempt {attempt} failed. Retrying in {current_delay}s...")
+                    logger.warning(f"âš ï¸ [RETRY] {func.__name__} attempt {attempt} failed. Retrying in {current_delay}s...")
                     await manager.broadcast({
                         "type": "diagnostic",
                         "text": f"SYSTEM_REPAIR: {silo_context} hiccup detected. Retrying maneuver (Attempt {attempt})...",

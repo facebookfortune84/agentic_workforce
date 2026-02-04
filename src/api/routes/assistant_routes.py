@@ -1,4 +1,4 @@
-"""
+﻿"""
 Assistant Chat Routes
 ---------------------
 
@@ -75,7 +75,7 @@ async def assistant_chat(
         }
 
     except Exception as e:
-        logger.error(f"⚠️ [ASSISTANT_FAULT]: {e}")
+        logger.error(f"âš ï¸ [ASSISTANT_FAULT]: {e}")
         return {
-            "response": f"⚠️ [ASSISTANT_FAULT]: {str(e)}"
+            "response": f"âš ï¸ [ASSISTANT_FAULT]: {str(e)}"
         }

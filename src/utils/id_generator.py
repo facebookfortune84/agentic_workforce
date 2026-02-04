@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: INDUSTRIAL ID GENERATOR v1.0
 PURPOSE: Standardizes UUID and human-readable prefixes for the 13-silo workforce.
 PATH: F:/agentic_workforce/src/utils/id_generator.py

@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: AGENT LOADER v7.0
 PURPOSE: Auto-discovers YAML agent manifests, validates them, and aligns them with
          the 13-silo industrial architecture and the 180-tool arsenal.

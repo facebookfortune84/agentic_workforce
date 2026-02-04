@@ -183,3 +183,4 @@ async def update_knowledge_graph(subject: str, relation: str, target: str):
             
         return f'[SUCCESS] [LATTICE_UPDATED]: {subject} --[{relation}]--> {target}'
     except Exception as e: return f'[ERROR] Graph Write Fault: {str(e)}'
+

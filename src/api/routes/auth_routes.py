@@ -1,4 +1,4 @@
-"""
+﻿"""
 GitHub OAuth & License-Protected Authentication Routes
 ------------------------------------------------------
 
@@ -50,7 +50,7 @@ async def github_login():
         f"client_id={client_id}&redirect_uri={redirect_uri}&scope=repo,user"
     )
 
-    logger.info(f"🗝️ [OAUTH]: Redirecting to GitHub: {url}")
+    logger.info(f"ðŸ—ï¸ [OAUTH]: Redirecting to GitHub: {url}")
 
     return RedirectResponse(url)
 
@@ -68,7 +68,7 @@ async def github_callback(code: str):
     target_url = f"{frontend_url}?code={code}"
 
     logger.info(
-        f"🗝️ [OAUTH]: Handshake code received. Bridging to Root: {target_url}"
+        f"ðŸ—ï¸ [OAUTH]: Handshake code received. Bridging to Root: {target_url}"
     )
 
     return RedirectResponse(url=target_url, status_code=302)
@@ -86,7 +86,7 @@ async def github_exchange(
     """
     Exchanges the GitHub OAuth code for an access token.
     """
-    logger.info(f"🗝️ [OAUTH]: Token exchange initiated for {lic.user_id}")
+    logger.info(f"ðŸ—ï¸ [OAUTH]: Token exchange initiated for {lic.user_id}")
 
     async with httpx.AsyncClient() as client:
         res = await client.post(

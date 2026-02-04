@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: TOOL PROXY v1.0
 PURPOSE: Standardizes tool execution with UI telemetry and error handling.
 PATH: F:/agentic_workforce/src/system/arsenal/tools/base_tool.py
@@ -21,7 +21,7 @@ class ToolProxy:
         # 1. Notify UI via ConnectionManager
         await manager.broadcast({
             "type": "diagnostic",
-            "text": f"🛠️ {agent_name} triggered arsenal tool: {tool_name}",
+            "text": f"ðŸ› ï¸ {agent_name} triggered arsenal tool: {tool_name}",
             "agent": agent_name
         })
 

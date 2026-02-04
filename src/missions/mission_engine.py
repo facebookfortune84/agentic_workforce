@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: MISSION ENGINE v1.0
 PURPOSE: The execution core that iterates through mission strategies, 
          hydrates specialists, and manages the tool-execution loop.
@@ -40,7 +40,7 @@ class MissionEngine:
             logger.error(f"Silo {silo} failed to provide an agent.")
             return state
 
-        logger.info(f"🤖 [MISSION_STEP] Agent {agent.name} ({agent.role}) deployed to {silo}.")
+        logger.info(f"ðŸ¤– [MISSION_STEP] Agent {agent.name} ({agent.role}) deployed to {silo}.")
         
         # 2. Prepare Context (Retrieve relevant memories)
         relevant_memory = await self.memory.recall(action_description, filter_dept=silo)
@@ -72,7 +72,7 @@ class MissionEngine:
                 t_name = tool_call["tool_name"]
                 t_args = tool_call.get("args", {})
                 
-                logger.info(f"🛠️ [TOOL_EXEC] {agent.name} calling {t_name} with {t_args}")
+                logger.info(f"ðŸ› ï¸ [TOOL_EXEC] {agent.name} calling {t_name} with {t_args}")
                 
                 # EXECUTE via the Suture (AgentInstance -> Registry)
                 result = await agent.run_tool(t_name, **t_args)
@@ -113,7 +113,7 @@ class MissionEngine:
             return state
 
         for i, step in enumerate(steps):
-            logger.info(f"🚀 [STEP {i+1}/{len(steps)}] Executing {step['silo']} maneuver...")
+            logger.info(f"ðŸš€ [STEP {i+1}/{len(steps)}] Executing {step['silo']} maneuver...")
             state = await self.run_mission_step(state, step)
             
             # Update strategy progress

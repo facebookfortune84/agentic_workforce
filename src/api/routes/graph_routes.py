@@ -1,11 +1,11 @@
-"""
+﻿"""
 Neural Lattice Graph Routes
 ---------------------------
 
 Extracted from server.py (v29.2 INDUSTRIAL ULTIMATE).
 
 Provides:
-- /api/v1/graph → returns the neural lattice graph JSON
+- /api/v1/graph â†’ returns the neural lattice graph JSON
 """
 
 import json
@@ -39,7 +39,7 @@ async def get_lattice_data(lic = Depends(get_license)):
             return json.load(f)
 
     except Exception as e:
-        logger.error(f"❌ [GRAPH_FAULT]: {e}")
+        logger.error(f"âŒ [GRAPH_FAULT]: {e}")
         return {
             "nodes": [],
             "links": [],

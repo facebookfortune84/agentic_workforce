@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: MISSION ORCHESTRATOR v1.0
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - MULTI-AGENT STRIKE COORDINATOR
@@ -79,7 +79,7 @@ class MissionOrchestrator:
         state["mission_strategy"] = strategy
 
         logger.info(
-            f"🚀 [ORCHESTRATOR] Strike {state['mission_id']} Initiated: {strategy.get('mission_title')}"
+            f"ðŸš€ [ORCHESTRATOR] Strike {state['mission_id']} Initiated: {strategy.get('mission_title')}"
         )
 
         # 3. Execute through Sovereign Brain (LangGraph)

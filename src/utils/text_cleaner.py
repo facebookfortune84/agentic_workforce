@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: TEXT SANITIZATION CORE v1.0
 PURPOSE: Cleans LLM artifacts for Neural Voice (TTS) and Discord/UI display.
 PATH: F:/agentic_workforce/src/utils/text_cleaner.py

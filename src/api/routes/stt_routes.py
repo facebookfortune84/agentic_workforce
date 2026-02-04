@@ -1,11 +1,11 @@
-"""
+﻿"""
 Speech-to-Text (STT) Routes
 ---------------------------
 
 Extracted from server.py (v29.2 INDUSTRIAL ULTIMATE).
 
 Provides:
-- /api/v1/stt → Whisper-via-Groq transcription
+- /api/v1/stt â†’ Whisper-via-Groq transcription
 """
 
 import os
@@ -54,14 +54,14 @@ async def speech_to_text(
         try:
             os.remove(temp_path)
         except Exception:
-            logger.warning(f"⚠️ [STT] Temp file cleanup failed: {temp_path}")
+            logger.warning(f"âš ï¸ [STT] Temp file cleanup failed: {temp_path}")
 
         return {
             "text": transcription.get("text", "")
         }
 
     except Exception as e:
-        logger.error(f"❌ [STT_FAULT]: {e}")
+        logger.error(f"âŒ [STT_FAULT]: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"STT_FAULT: {str(e)}"

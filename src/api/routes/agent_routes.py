@@ -1,11 +1,11 @@
-"""
+﻿"""
 Agent Roster Routes
 -------------------
 
 Extracted from server.py (v29.2 INDUSTRIAL ULTIMATE).
 
 Provides:
-- /api/v1/agents  → full roster of all agents in the Master Lattice
+- /api/v1/agents  â†’ full roster of all agents in the Master Lattice
 """
 
 import json
@@ -60,5 +60,5 @@ async def list_agents(lic = Depends(get_license)):
         return {"roster": ui_roster}
 
     except Exception as e:
-        logger.error(f"❌ [AGENT_ROSTER_FAULT]: {e}")
+        logger.error(f"âŒ [AGENT_ROSTER_FAULT]: {e}")
         return {"roster": [], "error": str(e)}

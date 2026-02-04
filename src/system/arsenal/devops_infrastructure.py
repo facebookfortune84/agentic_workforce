@@ -156,3 +156,4 @@ async def zip_directory(dir_path: str, zip_name: str):
         shutil.make_archive(str(dst).replace('.zip', ''), 'zip', src)
         return f'📦 [PACKAGE_COMPLETE]: {dst}'
     except Exception as e: return f'[ERROR]: {str(e)}'
+

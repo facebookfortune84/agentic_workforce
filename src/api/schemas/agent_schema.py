@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: AGENT SCHEMAS v1.0
 PURPOSE: Validates the complex YAML manifests from the 13 industrial silos.
 PATH: F:/agentic_workforce/src/api/schemas/agent_schema.py

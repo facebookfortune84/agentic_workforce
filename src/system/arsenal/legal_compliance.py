@@ -162,3 +162,4 @@ ____________________             ____________________
         return f'[SUCCESS] [LEGAL_ARTIFACT]: NDA physically committed to {path}'
     except Exception as e:
         return f'[ERROR] Contract Generation Failed: {str(e)}'
+

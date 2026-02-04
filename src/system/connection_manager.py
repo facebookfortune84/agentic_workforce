@@ -1,4 +1,4 @@
-"""
+﻿"""
 WebSocket Connection Manager
 ----------------------------
 

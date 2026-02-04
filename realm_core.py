@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: SOVEREIGN BRAIN v31.11
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - SEMANTIC SYNAPSE - IDEMPOTENCY LOCKS - 13,472 NODE AWARE
@@ -64,9 +64,9 @@ try:
         calculate_file_hash,
         get_file_metadata,
     )
-    print("✅ [BRAIN] Neural Mastermind Aligned to Sharded Foundation.")
+    print("âœ… [BRAIN] Neural Mastermind Aligned to Sharded Foundation.")
 except ImportError as e:
-    print(f"❌ [CRITICAL_IMPORT_ERROR]: Arsenal Registry linkage failed: {e}")
+    print(f"âŒ [CRITICAL_IMPORT_ERROR]: Arsenal Registry linkage failed: {e}")
     sys.exit(1)
 
 # --- 2. CONFIGURATION & HYBRID LLM FACTORY ---
@@ -87,7 +87,7 @@ def get_llm():
 
     if model_choice == "NEMOTRON":
         try:
-            print("🌀 [NVIDIA_NEMOTRON] Loading NVIDIA-Nemotron-Nano-9B-v2...")
+            print("ðŸŒ€ [NVIDIA_NEMOTRON] Loading NVIDIA-Nemotron-Nano-9B-v2...")
             pipe = pipeline(
                 "text-generation",
                 model="nvidia/NVIDIA-Nemotron-Nano-9B-v2",
@@ -98,9 +98,9 @@ def get_llm():
                 },
             )
             llm_instance = HuggingFacePipeline(pipeline=pipe)
-            print("✅ [NVIDIA_NEMOTRON] Local Brain Online.")
+            print("âœ… [NVIDIA_NEMOTRON] Local Brain Online.")
         except Exception as e:
-            print(f"⚠️ [MODEL_FAULT] Nemotron local failed: {e}. Defaulting to Groq.")
+            print(f"âš ï¸ [MODEL_FAULT] Nemotron local failed: {e}. Defaulting to Groq.")
             model_choice = "GROQ"
 
     if model_choice == "GROQ" or llm_instance is None:
@@ -109,7 +109,7 @@ def get_llm():
             model_name="llama-3.3-70b-versatile",
             api_key=os.getenv("GROQ_API_KEY"),
         )
-        print("🚀 [GROQ] Cloud Mastermind Online.")
+        print("ðŸš€ [GROQ] Cloud Mastermind Online.")
     return llm_instance
 
 
@@ -148,7 +148,7 @@ def get_industrial_specialist(silo: str):
         return get_random_agent(silo)
 
     except Exception as e:
-        print(f"⚠️ [SPECIALIST_FETCH_ERR]: {e}")
+        print(f"âš ï¸ [SPECIALIST_FETCH_ERR]: {e}")
         return None
 
 
@@ -269,7 +269,7 @@ async def supervisor_node(state: RealmForgeState):
         "meeting_participants": invitees,
         "messages": [
             AIMessage(
-                content=f"🤝 [ROUND_TABLE]: Convening {', '.join(invitees)}. Lead: {primary['name'] if primary else 'ForgeMaster'}."
+                content=f"ðŸ¤ [ROUND_TABLE]: Convening {', '.join(invitees)}. Lead: {primary['name'] if primary else 'ForgeMaster'}."
             )
         ],
     }
@@ -283,14 +283,14 @@ async def planner_node(state: RealmForgeState):
             "next_node": "synthesizer",
             "messages": [
                 AIMessage(
-                    content="🚨 [LIMIT_REACHED]: Strike aborted to preserve node integrity."
+                    content="ðŸš¨ [LIMIT_REACHED]: Strike aborted to preserve node integrity."
                 )
             ],
         }
 
     # HUD HEARTBEAT: Prevent websocket timeout during analysis
     heartbeat = AIMessage(
-        content="⚙️ [PLANNING]: Analyzing neural lattice and drafting maneuvers..."
+        content="âš™ï¸ [PLANNING]: Analyzing neural lattice and drafting maneuvers..."
     )
 
     mission = state["messages"][-1].content
@@ -326,7 +326,7 @@ async def planner_node(state: RealmForgeState):
         "messages": [
             heartbeat,
             AIMessage(
-                content=f"📋 [PLAN_LOCKED]: Orchestrating kinetic strike with {len(data.get('sub_tasks', []))} tasks."
+                content=f"ðŸ“‹ [PLAN_LOCKED]: Orchestrating kinetic strike with {len(data.get('sub_tasks', []))} tasks."
             ),
         ],
     }
@@ -357,7 +357,7 @@ async def execution_node(state: RealmForgeState):
                 "next_node": "planner",
                 "messages": [
                     AIMessage(
-                        content=f"🔄 [REDUNDANCY]: Escalating to {new_silo} Silo."
+                        content=f"ðŸ”„ [REDUNDANCY]: Escalating to {new_silo} Silo."
                     )
                 ],
             }
@@ -398,7 +398,7 @@ async def execution_node(state: RealmForgeState):
                     )
                 )
             except Exception as e:
-                print(f"💥 [TOOL_CRASH]: {tool_name} failed: {e}")
+                print(f"ðŸ’¥ [TOOL_CRASH]: {tool_name} failed: {e}")
                 return {
                     "next_node": "executor",
                     "task_queue": [{"tool": "HANDOFF"}],
@@ -434,9 +434,9 @@ async def validator_node(state: RealmForgeState):
                         "target": current_hash,
                     }
                 )
-                v_logs.append(f"✅ {path}: Verified. ({current_hash[:8]})")
+                v_logs.append(f"âœ… {path}: Verified. ({current_hash[:8]})")
             else:
-                v_logs.append(f"❌ {path}: Physical file missing from drive.")
+                v_logs.append(f"âŒ {path}: Physical file missing from drive.")
         except Exception:
             continue
 
@@ -446,7 +446,7 @@ async def validator_node(state: RealmForgeState):
         "next_node": "auditor",
         "messages": [
             AIMessage(
-                content=f"🛡️ [IRONCLAD]: {len(v_logs)} artifacts validated against physical drive."
+                content=f"ðŸ›¡ï¸ [IRONCLAD]: {len(v_logs)} artifacts validated against physical drive."
             )
         ],
     }
@@ -462,14 +462,14 @@ async def auditor_node(state: RealmForgeState):
         return {
             "messages": [
                 AIMessage(
-                    content="🚨 [AUDIT_FAIL]: Placeholder detected. Re-tracing mission logic..."
+                    content="ðŸš¨ [AUDIT_FAIL]: Placeholder detected. Re-tracing mission logic..."
                 )
             ],
             "next_node": "planner",
         }
     return {
         "messages": [
-            AIMessage(content="💎 [INTEGRITY_NOMINAL]: Sovereignty preserved.")
+            AIMessage(content="ðŸ’Ž [INTEGRITY_NOMINAL]: Sovereignty preserved.")
         ],
         "next_node": "synthesizer",
     }

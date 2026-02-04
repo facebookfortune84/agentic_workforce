@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: AGENT FACTORY v1.0
 PURPOSE: Hydrates YAML manifests into live AgentInstance objects with 
          direct tool-binding to the Master Arsenal.

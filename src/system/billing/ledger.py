@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: INDUSTRIAL LEDGER v1.0
 PURPOSE: Persistent logging of mission costs and specialist compensation.
 PATH: F:/agentic_workforce/src/system/billing/ledger.py
@@ -23,7 +23,7 @@ class IndustrialLedger:
                 await db.commit()
             return True
         except Exception as e:
-            logger.error(f"❌ [LEDGER_FAULT] Failed to log mission {mission_id}: {e}")
+            logger.error(f"âŒ [LEDGER_FAULT] Failed to log mission {mission_id}: {e}")
             return False
 
     @staticmethod

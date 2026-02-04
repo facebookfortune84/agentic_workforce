@@ -1,8 +1,8 @@
-"""
+﻿"""
 REALM FORGE: SOVEREIGN MEMORY ENGINE v26.0
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - RAG & LATTICE ENABLED - IRONCLAD HASH TRUTH
-PATH: F:/agentic_workforce_PROD/src/memory/engine.py
+PATH: F:/agentic_workforce/src/memory/engine.py
 """
 
 import os
@@ -23,8 +23,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("MemoryKernel")
 
 # --- PATH SOVEREIGNTY ---
-# Rigid Anchor to F:/agentic_workforce_PROD
-ROOT_DIR = Path("F:/agentic_workforce_PROD")
+# Rigid Anchor to F:/agentic_workforce
+ROOT_DIR = Path("F:/agentic_workforce")
 DATA_ROOT = ROOT_DIR / "data"
 CHROMA_PATH = str(DATA_ROOT / "chroma_db")
 GRAPH_PATH = DATA_ROOT / "memory" / "neural_graph.json"
@@ -59,7 +59,7 @@ class MemoryManager:
                 metadata={"hnsw:space": "cosine"}
             )
         except Exception as e:
-            logger.error(f"❌ [VECTOR_INIT_FAIL]: {e}")
+            logger.error(f"âŒ [VECTOR_INIT_FAIL]: {e}")
             raise
 
         # 2. RELATIONAL LATTICE (The 'Network Brain')
@@ -74,12 +74,12 @@ class MemoryManager:
                 with open(GRAPH_PATH, 'r', encoding='utf-8-sig') as f:
                     data = json.load(f)
                     self.graph = nx.node_link_graph(data)
-                logger.info(f"🕸️ [LATTICE_ACTIVE] Nodes: {self.graph.number_of_nodes()}")
+                logger.info(f"ðŸ•¸ï¸ [LATTICE_ACTIVE] Nodes: {self.graph.number_of_nodes()}")
             except Exception as e:
-                logger.error(f"⚠️ [LATTICE_RESET]: Corruption detected. {e}")
+                logger.error(f"âš ï¸ [LATTICE_RESET]: Corruption detected. {e}")
                 self.graph = nx.DiGraph()
         else:
-            logger.info("🕸️ [LATTICE_INIT] Creating fresh relational lattice.")
+            logger.info("ðŸ•¸ï¸ [LATTICE_INIT] Creating fresh relational lattice.")
             self.graph = nx.DiGraph()
 
     async def save_graph(self):
@@ -90,7 +90,7 @@ class MemoryManager:
                 with open(GRAPH_PATH, 'w', encoding='utf-8-sig') as f:
                     json.dump(data, f, indent=2)
             except Exception as e:
-                logger.error(f"❌ [GRAPH_SAVE_FAIL]: {e}")
+                logger.error(f"âŒ [GRAPH_SAVE_FAIL]: {e}")
 
     # ==============================================================================
     # IRONCLAD HASH TRUTH (DATA SOVEREIGNTY)
@@ -105,7 +105,7 @@ class MemoryManager:
                     sha256_hash.update(byte_block)
             return sha256_hash.hexdigest()
         except Exception as e:
-            logger.error(f"⚠️ [HASH_CALC_FAIL] {file_path}: {e}")
+            logger.error(f"âš ï¸ [HASH_CALC_FAIL] {file_path}: {e}")
             return "HASH_ERROR"
 
     async def verify_artifact_integrity(self, file_path: str) -> bool:
@@ -118,7 +118,7 @@ class MemoryManager:
         
         is_valid = stored_hash == current_hash
         if not is_valid:
-            logger.warning(f"🚨 [INTEGRITY_VIOLATION] Hash mismatch for: {file_path}")
+            logger.warning(f"ðŸš¨ [INTEGRITY_VIOLATION] Hash mismatch for: {file_path}")
         return is_valid
 
     # ==============================================================================
@@ -165,7 +165,7 @@ class MemoryManager:
             await self.save_graph()
             
         except Exception as e:
-            logger.error(f"⚠️ [EPISODIC_FAIL]: {e}")
+            logger.error(f"âš ï¸ [EPISODIC_FAIL]: {e}")
 
     async def ingest_knowledge(self, source: str, content: str, category: str = "industrial_data"):
         """Absorbs documentation into long-term knowledge base."""
@@ -177,9 +177,9 @@ class MemoryManager:
             )
             async with self.graph_lock:
                 self.graph.add_node(source, type="KNOWLEDGE", category=category)
-            logger.info(f"📚 [INGEST] Knowledge expanded: {source}")
+            logger.info(f"ðŸ“š [INGEST] Knowledge expanded: {source}")
         except Exception as e:
-            logger.error(f"❌ [INGEST_FAIL]: {e}")
+            logger.error(f"âŒ [INGEST_FAIL]: {e}")
 
     # ==============================================================================
     # RETRIEVAL (THE RAG PIPELINE)
@@ -195,13 +195,13 @@ class MemoryManager:
             k_res = self.knowledge.query(query_texts=[query], n_results=n_results)
             if k_res['documents']:
                 for doc in k_res['documents'][0]:
-                    context.append(f"📚 [KNOWLEDGE]: {doc}")
+                    context.append(f"ðŸ“š [KNOWLEDGE]: {doc}")
 
             # 2. Episodic Search
             e_res = self.episodic.query(query_texts=[query], n_results=n_results, where=where_meta)
             if e_res['documents']:
                 for doc in e_res['documents'][0]:
-                    context.append(f"💾 [EXPERIENCE]: {doc}")
+                    context.append(f"ðŸ’¾ [EXPERIENCE]: {doc}")
         except Exception as e:
             logger.warning(f"Memory recall hiccup: {e}")
 

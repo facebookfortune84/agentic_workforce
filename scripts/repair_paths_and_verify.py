@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: ROOT REPAIR & HASH VERIFICATION v1.0
 -------------------------------------------------
 Scans the entire project, replaces old root references with the new canonical root,
@@ -21,7 +21,7 @@ PROJECT_ROOT = Path("F:/agentic_workforce")
 
 OLD_ROOTS = [
     "F:/agentic_workforce",
-    "F:/agentic_workforce_PROD",
+    "F:/agentic_workforce",
     "F:\\RealmForge",
     "F:\\RealmForge_PROD",
     "F:/agentic_workforce",
@@ -124,7 +124,7 @@ def walk_and_repair():
 # ============================================================
 
 if __name__ == "__main__":
-    print("🔧 Starting root repair...")
+    print("ðŸ”§ Starting root repair...")
     changed = walk_and_repair()
-    print(f"✔ Completed. Files updated: {len(changed)}")
-    print(f"📄 Log written to: {LOG_PATH}")
+    print(f"âœ” Completed. Files updated: {len(changed)}")
+    print(f"ðŸ“„ Log written to: {LOG_PATH}")

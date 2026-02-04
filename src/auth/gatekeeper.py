@@ -1,8 +1,8 @@
-"""
+﻿"""
 REALM FORGE: SOVEREIGN GATEKEEPER v22.0
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - JWT ENGINE - ASYNC WAL - 13-SILO AUDIT ENABLED
-PATH: F:/agentic_workforce_PROD/src/auth/gatekeeper.py
+PATH: F:/agentic_workforce/src/auth/gatekeeper.py
 """
 
 import os
@@ -21,7 +21,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 # --- 0. PHYSICAL PATH SOVEREIGNTY ---
-ROOT_DIR = Path("F:/agentic_workforce_PROD")
+ROOT_DIR = Path("F:/agentic_workforce")
 BASE_PATH = ROOT_DIR / "data"
 DB_PATH = BASE_PATH / "security" / "licenses.db"
 
@@ -90,7 +90,7 @@ async def init_auth_db():
                       timestamp real)''')
         
         await db.commit()
-    logger.info(f"🔐 [GATEKEEPER] Neural Security Lattice Active (Async WAL): {DB_PATH}")
+    logger.info(f"ðŸ” [GATEKEEPER] Neural Security Lattice Active (Async WAL): {DB_PATH}")
 
 # ==============================================================================
 # 4. KEY & TOKEN MANAGEMENT
@@ -163,7 +163,7 @@ async def validate_key(api_key: str) -> Optional[License]:
             )
             
             if lic.status != "ACTIVE":
-                logger.warning(f"🚫 [ACCESS_BLOCKED] Key {api_key[:12]}... is INACTIVE")
+                logger.warning(f"ðŸš« [ACCESS_BLOCKED] Key {api_key[:12]}... is INACTIVE")
                 return None
             return lic
             

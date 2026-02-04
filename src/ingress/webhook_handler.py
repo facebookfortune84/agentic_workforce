@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: INGRESS HANDLER v1.0
 PURPOSE: Receives external signals and converts them into Mission Requests.
 PATH: F:/agentic_workforce/src/ingress/webhook_handler.py

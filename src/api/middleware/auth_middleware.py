@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: AUTH MIDDLEWARE v1.0
 PURPOSE: Sovereign Gatekeeper integration for FastAPI.
 PATH: F:/agentic_workforce/src/api/middleware/auth_middleware.py

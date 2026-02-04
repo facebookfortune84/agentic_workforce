@@ -1,4 +1,4 @@
-"""
+﻿"""
 Security & License Validation Dependencies
 ------------------------------------------
 

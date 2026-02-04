@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: USAGE TRACKER v1.0
 PURPOSE: Monitors token consumption and deducts credits via Gatekeeper.
 PATH: F:/agentic_workforce/src/system/billing/usage_tracker.py
@@ -34,6 +34,6 @@ class UsageTracker:
         )
         
         if success:
-            logger.info(f"⚡ [ENERGY] Mission {mission_id}: Deducted {cost} credits for {agent_id}.")
+            logger.info(f"âš¡ [ENERGY] Mission {mission_id}: Deducted {cost} credits for {agent_id}.")
         else:
-            logger.warning(f"⚠️ [ENERGY_LOW] Mission {mission_id}: Credit deduction failed.")
+            logger.warning(f"âš ï¸ [ENERGY_LOW] Mission {mission_id}: Credit deduction failed.")

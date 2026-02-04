@@ -1,5 +1,5 @@
-"""
-RealmForge Sovereign Gateway — Application Entrypoint
+﻿"""
+RealmForge Sovereign Gateway â€” Application Entrypoint
 -----------------------------------------------------
 
 This file replaces the legacy monolithic server.py.
@@ -46,12 +46,12 @@ def get_brain():
 
     if genesis_engine is None:
         try:
-            logger.info("🧠 [BRAIN] Awakening Genesis Engine...")
+            logger.info("ðŸ§  [BRAIN] Awakening Genesis Engine...")
             from realm_core import app as brain_app
             genesis_engine = brain_app
-            logger.info("✅ [BRAIN] Genesis Engine Online.")
+            logger.info("âœ… [BRAIN] Genesis Engine Online.")
         except Exception as e:
-            logger.error(f"❌ [CRITICAL] Engine Fault: {e}")
+            logger.error(f"âŒ [CRITICAL] Engine Fault: {e}")
             raise RuntimeError(f"Engine Failed to Ignite: {e}")
 
     return genesis_engine
@@ -79,16 +79,16 @@ async def lifespan(app: FastAPI):
         f"client_id={cid}&redirect_uri={ruri}&scope=repo,user"
     )
 
-    print("\n" + "🚀" * 20, flush=True)
-    print("✅ [BRAIN] TITAN-INDUSTRIAL HUD ONLINE.", flush=True)
-    print("✅ [LATTICE] SOVEREIGN NODE READY ON PORT 8000.", flush=True)
-    print(f"🌀 [INTELLIGENCE] Mode: {os.getenv('REALM_MODEL_CORE', 'GROQ')}", flush=True)
-    print(f"🗝️ [OAUTH DEBUG LINK]: {debug_url}", flush=True)
-    print("🚀" * 20 + "\n", flush=True)
+    print("\n" + "ðŸš€" * 20, flush=True)
+    print("âœ… [BRAIN] TITAN-INDUSTRIAL HUD ONLINE.", flush=True)
+    print("âœ… [LATTICE] SOVEREIGN NODE READY ON PORT 8000.", flush=True)
+    print(f"ðŸŒ€ [INTELLIGENCE] Mode: {os.getenv('REALM_MODEL_CORE', 'GROQ')}", flush=True)
+    print(f"ðŸ—ï¸ [OAUTH DEBUG LINK]: {debug_url}", flush=True)
+    print("ðŸš€" * 20 + "\n", flush=True)
 
     yield
 
-    logger.info("🔌 [OFFLINE] Sovereign Node shutdown initiated.")
+    logger.info("ðŸ”Œ [OFFLINE] Sovereign Node shutdown initiated.")
 
 
 # ==============================================================================

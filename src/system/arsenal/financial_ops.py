@@ -228,3 +228,4 @@ async def get_crypto_price(symbol: str):
         return f'💎 [CRYPTO_UPLINK]: 1 {symbol} = ${price:,.2f} USD'
     except Exception as e:
         return f'[ERROR] Crypto API Fault: {str(e)}'
+

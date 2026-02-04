@@ -1,12 +1,12 @@
-"""
+﻿"""
 Artifact I/O Routes
 -------------------
 
 Extracted from server.py (v29.2 INDUSTRIAL ULTIMATE).
 
 Provides:
-- /api/v1/io/read  → read files from PROD or Workspace
-- /api/v1/io/write → write files to PROD or Workspace
+- /api/v1/io/read  â†’ read files from PROD or Workspace
+- /api/v1/io/write â†’ write files to PROD or Workspace
 """
 
 import os
@@ -44,7 +44,7 @@ async def read_artifact(
 ):
     """
     Reads a file from either:
-    - F:/agentic_workforce_PROD
+    - F:/agentic_workforce
     - F:/RealmWorkspaces
 
     Performs path sanitization to prevent traversal.
@@ -53,7 +53,7 @@ async def read_artifact(
     try:
         # Strip absolute prefixes to avoid traversal
         clean_path = (
-            req.path.replace("F:/agentic_workforce_PROD/", "")
+            req.path.replace("F:/agentic_workforce/", "")
                     .replace("F:/RealmWorkspaces/", "")
                     .lstrip("/\\")
         )
@@ -75,7 +75,7 @@ async def read_artifact(
         return {"error": f"File {req.path} not located on physical disk."}
 
     except Exception as e:
-        logger.error(f"❌ [IO_READ_FAULT]: {e}")
+        logger.error(f"âŒ [IO_READ_FAULT]: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"IO_READ_FAULT: {str(e)}"
@@ -93,7 +93,7 @@ async def save_artifact(
 ):
     """
     Writes a file to either:
-    - F:/agentic_workforce_PROD
+    - F:/agentic_workforce
     - F:/RealmWorkspaces
 
     Automatically creates parent directories.
@@ -101,7 +101,7 @@ async def save_artifact(
 
     try:
         clean_path = (
-            req.path.replace("F:/agentic_workforce_PROD/", "")
+            req.path.replace("F:/agentic_workforce/", "")
                     .replace("F:/RealmWorkspaces/", "")
                     .lstrip("/\\")
         )
@@ -117,7 +117,7 @@ async def save_artifact(
         return {"status": "SUCCESS"}
 
     except Exception as e:
-        logger.error(f"❌ [IO_WRITE_FAULT]: {e}")
+        logger.error(f"âŒ [IO_WRITE_FAULT]: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"Physical Write Error: {str(e)}"

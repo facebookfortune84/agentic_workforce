@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-REALM FORGE — SOVEREIGN BACKEND COMPARATOR v60.6
+REALM FORGE â€” SOVEREIGN BACKEND COMPARATOR v60.6
 
 - Scans the repo
 - Compares against canonical backend schema

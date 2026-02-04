@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: MISSION ENGINE ROUTES v30.0
 PURPOSE: Handles mission ignition, streaming telemetry, and energy deduction.
 PATH: F:/agentic_workforce/src/api/routes/mission_routes.py
@@ -44,7 +44,7 @@ async def mission(req: MissionRequest, lic = Depends(get_license)):
 
         await manager.broadcast({
             "type": "diagnostic",
-            "text": f"🚀 Strike {mission_id} Initialized for {lic.user_id}.",
+            "text": f"ðŸš€ Strike {mission_id} Initialized for {lic.user_id}.",
             "agent": "ORCHESTRATOR",
         })
 
@@ -103,6 +103,6 @@ async def mission(req: MissionRequest, lic = Depends(get_license)):
         return {"status": "SUCCESS", "mission_id": mission_id}
 
     except Exception as e:
-        logger.error(f"💥 [MISSION_FAULT]: {e}")
+        logger.error(f"ðŸ’¥ [MISSION_FAULT]: {e}")
         await manager.broadcast({"type": "error", "message": str(e)})
         raise HTTPException(status_code=500, detail=str(e))

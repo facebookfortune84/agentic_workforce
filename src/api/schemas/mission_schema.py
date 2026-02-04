@@ -1,4 +1,4 @@
-"""
+﻿"""
 REALM FORGE: MISSION SCHEMAS v1.0
 PURPOSE: Defines the data structures for mission requests, strategies, and responses.
 PATH: F:/agentic_workforce/src/api/schemas/mission_schema.py

@@ -1,8 +1,8 @@
-"""
+﻿"""
 REALM FORGE: SOVEREIGN STATE BEDROCK v20.0
 ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
 STATUS: PRODUCTION READY - IDEMPOTENCY LOCKS - BENTO-GRID TELEMETRY
-PATH: F:/agentic_workforce_PROD/src/system/state.py
+PATH: F:/agentic_workforce/src/system/state.py
 """
 
 import operator
@@ -121,7 +121,7 @@ class RealmForgeState(TypedDict):
 def get_initial_state() -> RealmForgeState:
     """
     Titan Factory: Initializes the swarm in production mode.
-    Anchors the system to F:/agentic_workforce_PROD.
+    Anchors the system to F:/agentic_workforce.
     """
     return {
         "messages": [],
@@ -171,6 +171,6 @@ def get_initial_state() -> RealmForgeState:
             "start_time": datetime.now().isoformat(),
             "version": "20.0.0",
             "ui_theme": "Caffeine-Neon",
-            "root_anchor": "F:/agentic_workforce_PROD"
+            "root_anchor": "F:/agentic_workforce"
         }
     }

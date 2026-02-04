@@ -1,4 +1,4 @@
-"""
+﻿"""
 RealmForge System Configuration
 -------------------------------
 
@@ -10,7 +10,7 @@ from pathlib import Path
 import json
 
 # Root anchor
-ROOT_DIR = Path("F:/agentic_workforce_PROD")
+ROOT_DIR = Path("F:/agentic_workforce")
 DATA_ROOT = ROOT_DIR / "data"
 GRAPH_PATH = DATA_ROOT / "lattice" / "neural_graph.json"
 LATTICE_PATH = DATA_ROOT / "lattice" / "department_lattice.json"
