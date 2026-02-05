@@ -20,7 +20,14 @@
     "incremental": true,
     "types": [
       "node"
-    ]
+    ],
+    /* ADD THE TWO LINES BELOW */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
