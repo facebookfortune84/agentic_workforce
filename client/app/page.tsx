@@ -28,7 +28,6 @@ import ArsenalManager from "@/components/chambers/ArsenalManager";
 interface Handoff {
   from: string;
   to: string;
-}
 
 interface LogEntry {
   id: string | number;
@@ -38,20 +37,17 @@ interface LogEntry {
   timestamp: string;
   node?: string;
   dept?: string;
-}
 
 interface AssistantLog {
   id: number;
   role: "assistant" | "user";
   text: string;
-}
 
 interface NavIconProps {
   icon: React.ReactNode;
   active: boolean;
   onClick: () => void;
   label: string;
-}
 
 interface TelemetryVitals {
   cpu: number;
@@ -59,7 +55,6 @@ interface TelemetryVitals {
   lattice_nodes: number;
   timestamp: number;
   active_sector: string;
-}
 
 export default function TitanForgeHUD() {
 
@@ -89,7 +84,7 @@ export default function TitanForgeHUD() {
   const [activeAgent, setActiveAgent] = useState("ForgeMaster");
   const [handoffs, setHandoffs] = useState<Handoff[]>([]);
   const [meetingParticipants, setMeetingParticipants] = useState<string[]>([]);
-  const [missionStrategy, setMissionStrategy] = useState<any>(null); // Strategy structure is dynamic
+  const [missionStrategy, setMissionStrategy] = useState<unknown>(null); // Strategy structure is dynamic
   const [chatInput, setChatInput] = useState("");
   const [isGitHubLinked, setIsGitHubLinked] = useState(false);
 
@@ -98,7 +93,7 @@ export default function TitanForgeHUD() {
       id: 1,
       role: "assistant",
       text: "Lattice pressurized. I am your Sovereign Consultant, synchronized with the 13,472 node neural network."
-    }
+
   ]);
 
   const [diagnosticLines, setDiagnosticLines] = useState<string[]>([
@@ -113,7 +108,7 @@ export default function TitanForgeHUD() {
       agent: "CORE",
       content: "### [TITAN_OS_v60.5] UPLINK_STABLE.\n1,113 Agents renormalized. 180 Tools armored. Mission Orchestrator standby.",
       timestamp: "INIT"
-    }
+
   ]);
 
   // --- 4. AUDIO PIPELINE ---
@@ -135,11 +130,9 @@ export default function TitanForgeHUD() {
 
       if (!audioCtx.current) {
         audioCtx.current = new AudioCtor();
-      }
 
       if (audioCtx.current.state === "suspended") {
         await audioCtx.current.resume();
-      }
 
       setAudioUnlocked(true);
       setDiagnosticLines((p: string[]) => [
@@ -148,14 +141,13 @@ export default function TitanForgeHUD() {
       ]);
     } catch (err) {
       console.error("Audio Fault", err);
-    }
+
   };
 
   const playNextAudio = useCallback(async () => {
     if (audioQueue.current.length === 0 || !audioUnlocked || !audioCtx.current) {
       isAudioPlaying.current = false;
       return;
-    }
 
     isAudioPlaying.current = true;
     const base64Str = audioQueue.current.shift();
@@ -178,7 +170,7 @@ export default function TitanForgeHUD() {
       console.error("Audio Decode Error", e);
       isAudioPlaying.current = false;
       playNextAudio();
-    }
+
   }, [audioUnlocked]);
 
   // --- 6. MISSION ENGINE ---
@@ -194,7 +186,7 @@ export default function TitanForgeHUD() {
           agent: "ARCHITECT",
           content: text,
           timestamp: new Date().toLocaleTimeString()
-        }
+
       ]);
 
       setIsProcessing(true);
@@ -211,8 +203,8 @@ export default function TitanForgeHUD() {
               "X-API-Key": key,
               "ngrok-skip-browser-warning": "69420",
               "Content-Type": "application/json"
-            }
-          }
+
+
         );
       } catch (err) {
         setDiagnosticLines((p: string[]) => [
@@ -220,7 +212,7 @@ export default function TitanForgeHUD() {
           `[FAULT]: Strike MSN Uplink Failed.`
         ]);
         setIsProcessing(false);
-      }
+
     },
     [config.url, config.key, isProcessing]
   );
@@ -248,8 +240,8 @@ export default function TitanForgeHUD() {
           headers: {
             "X-API-Key": key,
             "ngrok-skip-browser-warning": "69420"
-          }
-        }
+
+
       );
 
       setAssistantLogs((p: AssistantLog[]) => [
@@ -263,11 +255,10 @@ export default function TitanForgeHUD() {
           id: Date.now(),
           role: "assistant",
           text: "⚠️ [LINK_ERROR]: Could not reach Mastermind bridge."
-        }
+
       ]);
-    }
+
   };
-}
 
 // --- 8. SWARM TELEMETRY ---
   const connectToSwarm = useCallback(
@@ -303,12 +294,10 @@ export default function TitanForgeHUD() {
                 ...p.slice(-49),
                 `🔄 [HANDOFF]: ${h.from} ➔ ${h.to}`
               ]);
-            }
-          }
+
 
           if (data.type === "diagnostic") {
             setDiagnosticLines((p) => [...p.slice(-49), data.text]);
-          }
 
           if (data.type === "audio_chunk") {
             setGlobalLogs((p: LogEntry[]) => [
@@ -321,14 +310,13 @@ export default function TitanForgeHUD() {
                 timestamp: new Date().toLocaleTimeString(),
                 node: data.node,
                 dept: data.dept
-              }
+
             ]);
 
             if (data.audio_base64 && audioUnlocked) {
               audioQueue.current.push(data.audio_base64);
               if (!isAudioPlaying.current) playNextAudio();
-            }
-          }
+
 
           if (data.type === "mission_complete") setIsProcessing(false);
         };
@@ -339,7 +327,7 @@ export default function TitanForgeHUD() {
         };
       } catch (err) {
         console.error("Socket Connection Fault", err);
-      }
+
     },
     [audioUnlocked, playNextAudio]
   );
@@ -376,8 +364,8 @@ export default function TitanForgeHUD() {
               headers: {
                 "X-API-Key": savedKey,
                 "ngrok-skip-browser-warning": "69420"
-              }
-            }
+
+
           )
           .then(() => {
             setDiagnosticLines((p) => [
@@ -394,12 +382,12 @@ export default function TitanForgeHUD() {
               `[${new Date().toLocaleTimeString()}] ❌ [OAUTH]: Handshake failure.`
             ]);
           });
-      }
-    }
+
+
   }, [connectToSwarm, config.url, config.key]);
 
   // Ensure `mounted` is defined using useState and useEffect
-  const [mounted, setMounted] = useState(false);
+  
 
   useEffect(() => {
     setMounted(true);
@@ -584,7 +572,7 @@ export default function TitanForgeHUD() {
                   if (!isGitHubLinked) {
                     const target = (localStorage.getItem("RF_URL") || config.url).replace(/\/$/, "");
                     window.location.href = `${target}/api/v1/auth/github`;
-                  }
+
                 }}
                 disabled={isGitHubLinked}
                 className={`w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all group border ${isGitHubLinked ? "bg-[#00f2ff]/10 border-[#00f2ff]/30 cursor-default" : "bg-white/5 border-white/10 hover:bg-[#00f2ff]/10 hover:border-[#00f2ff]/30"}`}
@@ -677,4 +665,80 @@ function NavIcon({ icon, active, onClick, label }: NavIconProps) {
       </span>
     </button>
   );
-}
+
+</input>
+</div>
+</input>
+</div>
+</div>
+</motion>
+</div>
+</AnimatePresence>
+</Send>
+</button>
+</textarea>
+</div>
+</div>
+</User>
+</div>
+</div>
+</div>
+</div>
+</Github>
+</CheckCircle2>
+</button>
+</ShieldCheck>
+</div>
+</div>
+</motion>
+</AnimatePresence>
+</Terminal>
+</div>
+</div>
+</div>
+</ArsenalManager>
+</NeuralLattice>
+</ArtifactStudio>
+</WarRoom>
+</motion>
+</AnimatePresence>
+</div>
+</MessageSquare>
+</button>
+</Binary>
+</div>
+</Activity>
+</div>
+</div>
+</div>
+</div>
+</header>
+</main>
+</Power>
+</button>
+</Settings>
+</NavIcon>
+</div>
+</Wrench>
+</NavIcon>
+</Share2>
+</NavIcon>
+</Code2>
+</NavIcon>
+</LayoutGrid>
+</NavIcon>
+</nav>
+</Binary>
+</motion>
+</aside>
+</div>
+</WebSocket>
+</AudioContext>
+</string>
+</LogEntry>
+</string>
+</AssistantLog>
+</unknown>
+</string>
+</Handoff>
+</TelemetryVitals>
