@@ -1,13 +1,12 @@
-const nextConfig = {
-  /* config options here */
-  eslint: {
-    // This ignores linting errors during build so the deployment doesn't fail
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    // This ignores type errors during build for faster deployment
-    ignoreBuildErrors: true,
-  },
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  experimental: {
+    turbo: {
+      rules: {}
+    }
+  }
 };
 
 export default nextConfig;
