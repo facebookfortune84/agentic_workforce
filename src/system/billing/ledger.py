@@ -6,7 +6,7 @@ PATH: F:/agentic_workforce/src/system/billing/ledger.py
 
 import aiosqlite
 import time
-from src.auth import DB_PATH, gatekeeper
+from src.auth.gatekeeper import DB_PATH
 from src.system.config import logger
 
 class IndustrialLedger:
@@ -36,3 +36,4 @@ class IndustrialLedger:
             ) as cursor:
                 rows = await cursor.fetchall()
                 return {row[0]: row[1] for row in rows}
+

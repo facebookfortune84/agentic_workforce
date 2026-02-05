@@ -251,5 +251,4 @@ def bootstrap_gatekeeper():
         loop.create_task(init_auth_db())
     else:
         asyncio.run(init_auth_db())
-
-bootstrap_gatekeeper()
+        asyncio.run(init_auth_db())
