@@ -78,7 +78,7 @@ interface TelemetryVitals {
   active_sector: string;
 }
 
-export default function TitanForgeHUD(): JSX.Element {
+function TitanForgeHUD() {
   // --- 1. SYSTEM NAVIGATION ---
   const [activeTab, setActiveTab] = useState("war_room");
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
@@ -156,7 +156,7 @@ export default function TitanForgeHUD(): JSX.Element {
         audioCtx.current = new AudioCtor();
       }
 
-      if (audioCtx.current.state === "suspended") {
+      if (audioCtx.current && audioCtx.current.state === "suspended") {
         await audioCtx.current.resume();
       }
 
@@ -761,6 +761,8 @@ export default function TitanForgeHUD(): JSX.Element {
 
                 <button
                   onClick={handleAssistantChat}
+                  title="Send message"
+                  aria-label="Send message"
                   className="absolute bottom-4 right-4 p-2 bg-[#ff80bf] text-black rounded-lg hover:bg-white transition-all shadow-[0_0_20px_rgba(255,128,191,0.3)]"
                 >
                   <Send size={18} fill="currentColor" />
@@ -788,6 +790,7 @@ export default function TitanForgeHUD(): JSX.Element {
                   <label className="text-[10px] uppercase font-black text-[#00f2ff] tracking-widest block ml-2">
                     Node_Gateway_Endpoint
                   </label>
+                </div>
 
                   <input
                     value={config.url}
@@ -810,23 +813,23 @@ export default function TitanForgeHUD(): JSX.Element {
                     onChange={(e) =>
                       setConfig({ ...config, key: e.target.value })
                     }
-                    className="w-full bg-black border border-white/10 p-5 rounded-2xl text-[#ff80bf] outline-none focus:border-[#ff80bf]/50"
+                    placeholder="Enter your signature"
+                    title="God_Mode_Signature"
+                    aria-label="God Mode Signature"
                   />
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("RF_URL", config.url);
-                      localStorage.setItem("RF_KEY", config.key);
-                      setConfig({ ...config, open: false });
-                      window.location.reload();
-                    }
-                  }}
-                  className="w-full py-6 bg-[#00f2ff] text-black font-black uppercase text-lg rounded-3xl hover:bg-white transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
-                >
-                  Suture Swarm Link
-                </button>
+                  <button
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        localStorage.setItem("RF_URL", config.url);
+                        localStorage.setItem("RF_KEY", config.key);
+                        setConfig({ ...config, open: false });
+                        window.location.reload();
+                      }
+                    }}
+                    className="w-full py-6 bg-[#00f2ff] text-black font-black uppercase text-lg rounded-3xl hover:bg-white transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
+                  >
+                    Suture Swarm Link
+                  </button>
               </div>
             </motion.div>
           </div>
@@ -836,7 +839,7 @@ export default function TitanForgeHUD(): JSX.Element {
   );
 }
 
-function NavIcon({ icon, active, onClick, label }: NavIconProps): JSX.Element {
+function NavIcon({ icon, active, onClick, label }: NavIconProps) {
   return (
     <button
       onClick={onClick}
