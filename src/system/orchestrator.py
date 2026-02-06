@@ -61,8 +61,20 @@ class MissionOrchestrator:
             ]
         }}
         """
-        res = await self.llm.ainvoke([SystemMessage(content=prompt)])
-        return extract_json(res.content)
+        try:
+            res = await self.llm.ainvoke([SystemMessage(content=prompt)])
+            # AUTO-HEAL: Ensure result is never None
+            strategy = extract_json(res.content)
+            if strategy is None:
+                raise ValueError("LLM returned non-JSON content")
+            return strategy
+        except Exception as e:
+            logger.error(f"⚠️ [STRATEGY_FAULT]: Failed to parse strategy. Using emergency fallback. Error: {e}")
+            return {
+                "mission_title": "EMERGENCY_STRIKE",
+                "required_silos": ["Architect"],
+                "steps": [{"step": 1, "silo": "Architect", "action": "Execute manual override"}]
+            }
 
     async def execute_multi_agent_strike(self, directive: str, user_id: str = "ADMIN"):
         """
@@ -76,22 +88,29 @@ class MissionOrchestrator:
 
         # 2. Draft Strategy
         strategy = await self.draft_mission_strategy(directive)
+        # Defensive check: if strategy Drafter failed, use an empty dict to avoid NoneType
+        strategy = strategy or {}
         state["mission_strategy"] = strategy
 
+        # TITAN-HARDENED: Safely get the mission title
+        title = strategy.get('mission_title', 'UNKNOWN_STRIKE')
         logger.info(
-            f"ðŸš€ [ORCHESTRATOR] Strike {state['mission_id']} Initiated: {strategy.get('mission_title')}"
+            f"🚀 [ORCHESTRATOR] Strike {state['mission_id']} Initiated: {title}"
         )
 
         # 3. Execute through Sovereign Brain (LangGraph)
         final_state = await brain_graph.ainvoke(state)
 
-        # 4. Final Audit
+        # 4. Final Audit - Guarded against missing strategy keys
+        steps_count = len(strategy.get('steps', []))
+        silos_count = len(strategy.get('required_silos', []))
+
         await self.memory.commit_mission_event(
             mission_id=final_state["mission_id"],
             agent_id="ORCHESTRATOR",
             dept="Architect",
             action="STRIKE_SUMMARY",
-            result=f"Completed {len(strategy.get('steps', []))} maneuvers across {len(strategy.get('required_silos', []))} silos.",
+            result=f"Completed {steps_count} maneuvers across {silos_count} silos.",
         )
 
         return final_state
@@ -116,8 +135,15 @@ class MissionOrchestrator:
 
         # Simulate discussion
         for p in participants:
+            # SAFETY: Guard against specialist being None or missing keys
+            if not p or not isinstance(p, dict):
+                continue
+                
+            p_name = p.get('name', 'Unknown_Specialist')
+            p_role = p.get('role', 'Expert')
+
             prompt = f"""
-            IDENTITY: {p['name']} | ROLE: {p['role']}
+            IDENTITY: {p_name} | ROLE: {p_role}
             MEETING TOPIC: {topic}
             TRANSCRIPT SO FAR: {' '.join(meeting_transcript)}
             
@@ -125,7 +151,7 @@ class MissionOrchestrator:
             Be concise, technical, and focus on your sector's contribution.
             """
             res = await self.llm.ainvoke([SystemMessage(content=prompt)])
-            contribution = f"[{p['name']} - {p['role']}]: {res.content}"
+            contribution = f"[{p_name} - {p_role}]: {res.content}"
             meeting_transcript.append(contribution)
 
         # Archive the meeting
