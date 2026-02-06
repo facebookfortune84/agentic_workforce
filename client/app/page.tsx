@@ -35,7 +35,6 @@ import {
 import axios from "axios";
 
 // --- CHAMBER COMPONENTS ---
-import type { FC } from "react";
 import WarRoom from "@/components/chambers/WarRoom";
 import ArtifactStudio from "@/components/chambers/ArtifactStudio";
 import NeuralLattice from "@/components/chambers/NeuralLattice";
@@ -78,7 +77,8 @@ interface TelemetryVitals {
   active_sector: string;
 }
 
-function TitanForgeHUD() {
+// FIX: Added 'export default' keyword here
+export default function TitanForgeHUD() {
   // --- 1. SYSTEM NAVIGATION ---
   const [activeTab, setActiveTab] = useState("war_room");
   const [isAssistantOpen, setIsAssistantOpen] = useState(true);
@@ -88,9 +88,7 @@ function TitanForgeHUD() {
 
   // --- 2. CONFIGURATION ---
   const [config, setConfig] = useState({
-    url:
-      process.env.NEXT_PUBLIC_API_URL ||
-      "https://glowfly-sizeable-lazaro.ngrok-free.dev",
+    url: "https://glowfly-sizeable-lazaro.ngrok-free.dev",
     key: "sk-realm-god-mode-888",
     open: false
   });
@@ -458,13 +456,12 @@ function TitanForgeHUD() {
           });
       }
     }
-  }, [connectToSwarm, config.url, config.key]);
+  }, [connectToSwarm]);
 
   if (!mounted) return null;
 
-    return (
+  return (
     <div className="flex h-screen w-screen bg-[#050505] text-slate-200 overflow-hidden font-sans text-[13px]">
-      {/* COLUMN 1: NAVIGATION RAIL */}
       <aside className="w-[72px] bg-[#0a0a0a] border-r border-white/5 flex flex-col items-center py-8 gap-10 shrink-0 z-[100]">
         <motion.div
           whileHover={{ scale: 1.1 }}
@@ -524,7 +521,6 @@ function TitanForgeHUD() {
         </div>
       </aside>
 
-      {/* COLUMN 2: PRIMARY WORKSPACE */}
       <main className="flex-1 flex flex-col min-w-0 bg-[#080808] relative">
         <header className="h-14 border-b border-white/5 flex items-center px-8 justify-between bg-[#0a0a0a]/50 backdrop-blur-md">
           <div className="flex items-center gap-6">
@@ -650,9 +646,8 @@ function TitanForgeHUD() {
             )}
           </div>
         </div>
-        </main>
-        
-              {/* COLUMN 3: SOVEREIGN ASSISTANT */}
+      </main>
+
       <AnimatePresence>
         {isAssistantOpen && (
           <motion.aside
@@ -744,30 +739,28 @@ function TitanForgeHUD() {
               ))}
             </div>
 
-            <div className="p-6 border-t border-white/5 bg-black/20">
-              <div className="relative">
-                <textarea
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleAssistantChat();
-                    }
-                  }}
-                  placeholder="Inquire with the Mastermind..."
-                  className="w-full bg-black border border-white/10 rounded-2xl p-4 pr-12 text-sm font-medium outline-none focus:border-[#ff80bf]/50 h-32 resize-none transition-all placeholder:text-white/5"
-                />
+            <div className="p-6 border-t border-white/5 bg-black/20 relative">
+              <textarea
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleAssistantChat();
+                  }
+                }}
+                placeholder="Inquire with the Mastermind..."
+                className="w-full bg-black border border-white/10 rounded-2xl p-4 text-sm font-medium outline-none focus:border-[#ff80bf]/50 h-32 resize-none transition-all placeholder:text-white/5"
+              />
 
-                <button
-                  onClick={handleAssistantChat}
-                  title="Send message"
-                  aria-label="Send message"
-                  className="absolute bottom-4 right-4 p-2 bg-[#ff80bf] text-black rounded-lg hover:bg-white transition-all shadow-[0_0_20px_rgba(255,128,191,0.3)]"
-                >
-                  <Send size={18} fill="currentColor" />
-                </button>
-              </div>
+              <button
+                onClick={handleAssistantChat}
+                title="Send message"
+                aria-label="Send message"
+                className="absolute bottom-10 right-10 p-2 bg-[#ff80bf] text-black rounded-lg hover:bg-white transition-all shadow-[0_0_20px_rgba(255,128,191,0.3)]"
+              >
+                <Send size={18} fill="currentColor" />
+              </button>
             </div>
           </motion.aside>
         )}
@@ -790,8 +783,6 @@ function TitanForgeHUD() {
                   <label className="text-[10px] uppercase font-black text-[#00f2ff] tracking-widest block ml-2">
                     Node_Gateway_Endpoint
                   </label>
-                </div>
-
                   <input
                     value={config.url}
                     placeholder="https://glowfly-sizeable-lazaro.ngrok-free.dev"
@@ -806,30 +797,29 @@ function TitanForgeHUD() {
                   <label className="text-[10px] uppercase font-black text-[#ff80bf] tracking-widest block ml-2">
                     God_Mode_Signature
                   </label>
-
                   <input
                     type="password"
                     value={config.key}
                     onChange={(e) =>
                       setConfig({ ...config, key: e.target.value })
                     }
-                    placeholder="Enter your signature"
-                    title="God_Mode_Signature"
-                    aria-label="God Mode Signature"
+                    placeholder="Signature..."
+                    className="w-full bg-black border border-white/10 p-5 rounded-2xl text-[#ff80bf] outline-none focus:border-[#ff80bf]/50"
                   />
-                  <button
-                    onClick={() => {
-                      if (typeof window !== "undefined") {
-                        localStorage.setItem("RF_URL", config.url);
-                        localStorage.setItem("RF_KEY", config.key);
-                        setConfig({ ...config, open: false });
-                        window.location.reload();
-                      }
-                    }}
-                    className="w-full py-6 bg-[#00f2ff] text-black font-black uppercase text-lg rounded-3xl hover:bg-white transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
-                  >
-                    Suture Swarm Link
-                  </button>
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem("RF_URL", config.url);
+                      localStorage.setItem("RF_KEY", config.key);
+                      window.location.reload();
+                    }
+                  }}
+                  className="w-full py-6 bg-[#00f2ff] text-black font-black uppercase text-lg rounded-3xl hover:bg-white transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
+                >
+                  Suture Swarm Link
+                </button>
               </div>
             </motion.div>
           </div>
@@ -850,15 +840,9 @@ function NavIcon({ icon, active, onClick, label }: NavIconProps) {
       }`}
     >
       {icon}
-
       <span className="absolute left-20 bg-[#ff80bf] text-black px-3 py-1.5 text-[9px] font-black uppercase rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none tracking-widest z-[200]">
         {label}
       </span>
     </button>
   );
 }
-
-
-
-
-
