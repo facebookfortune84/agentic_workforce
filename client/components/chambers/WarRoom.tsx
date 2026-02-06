@@ -2,12 +2,11 @@
  * REALM FORGE: TITAN WAR ROOM v60.5
  * STYLE: CAFFEINE-NEON / HIGH-VISIBILITY / PRODUCTION-HARDENED
  * ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
- * PATH: F:/agentic_workforce/client/components/chambers/WarRoom.tsx
  */
 
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send, Activity, Users, Terminal, Volume2, VolumeX,
@@ -18,9 +17,44 @@ import {
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
+
+// --- INTERFACES ---
+interface LogEntry {
+  id: string | number;
+  type: "user" | "ai" | "system";
+  agent: string;
+  content: string;
+  timestamp: string;
+  node?: string;
+  dept?: string;
+}
+
+interface Agent {
+  id?: string;
+  name?: string;
+  department?: string;
+  tools?: string[];
+}
+
+interface SectorMetadata {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+interface WarRoomProps {
+  logs: LogEntry[];
+  isProcessing: boolean;
+  onSend: (text: string) => void;
+  unlockAudio: () => void;
+  audioUnlocked: boolean;
+  participants?: string[];
+}
 
 // --- 13 CANONICAL INDUSTRIAL SILOS ---
-const SECTOR_METADATA = [
+const SECTOR_METADATA: SectorMetadata[] = [
   { id: "Architect", label: "Architect", icon: <Layout size={16} />, color: "#00f2ff" },
   { id: "Data_Intelligence", label: "Data Intel", icon: <Database size={16} />, color: "#00f2ff" },
   { id: "Software_Engineering", label: "Software Eng", icon: <Cpu size={16} />, color: "#00f2ff" },
@@ -36,25 +70,6 @@ const SECTOR_METADATA = [
   { id: "Facility_Management", label: "Facilities", icon: <Factory size={16} />, color: "#ff007f" },
 ];
 
-interface LogEntry {
-  id: string | number;
-  type: "user" | "ai" | "system";
-  agent: string;
-  content: string;
-  timestamp: string;
-  node?: string;
-  dept?: string;
-}
-
-interface WarRoomProps {
-  logs: LogEntry[];
-  isProcessing: boolean;
-  onSend: (text: string) => void;
-  unlockAudio: () => void;
-  audioUnlocked: boolean;
-  participants?: string[];
-}
-
 export default function WarRoom({
   logs = [],
   isProcessing = false,
@@ -64,7 +79,7 @@ export default function WarRoom({
   participants = []
 }: WarRoomProps) {
   const [task, setTask] = useState("");
-  const [roster, setRoster] = useState<any[]>([]);
+  const [roster, setRoster] = useState<Agent[]>([]);
   const [activeDept, setActiveDept] = useState("Architect");
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -92,13 +107,14 @@ export default function WarRoom({
 
   // --- FETCH ROSTER ---
   const fetchRoster = async () => {
+    if (typeof window === "undefined") return;
     const url = localStorage.getItem("RF_URL");
     const key = localStorage.getItem("RF_KEY");
     if (!url) return;
 
     try {
       const res = await axios.get(`${url.replace(/\/$/, "")}/api/v1/agents`, {
-        headers: { "X-API-Key": key, "ngrok-skip-browser-warning": "69420" }
+        headers: { "X-API-Key": key || "", "ngrok-skip-browser-warning": "69420" }
       });
       setRoster(res.data.roster || res.data.agents || []);
     } catch {
@@ -111,6 +127,49 @@ export default function WarRoom({
     if (!task.trim() || isProcessing) return;
     onSend(task);
     setTask("");
+  };
+
+  // --- MARKDOWN RENDERERS ---
+  const markdownComponents: Components = {
+    h1: ({node, ...p}) => (
+      <h1
+        className="text-lg font-black text-white uppercase mb-4 border-b border-white/10 pb-2"
+        {...p}
+      />
+    ),
+    h3: ({node, ...p}) => (
+      <h3
+        className="text-[#00f2ff] font-bold uppercase mt-4 mb-2 tracking-widest"
+        {...p}
+      />
+    ),
+    code: ({node, ...p}) => (
+      <code
+        className="bg-[#111] px-2 py-1 text-[#ff80bf] rounded border border-white/5 text-[12px] terminal-literal"
+        {...p}
+      />
+    ),
+    table: ({node, ...p}) => (
+      <div className="overflow-x-auto my-6 border border-white/5 rounded-lg">
+        <table className="min-w-full text-[11px]" {...p} />
+      </div>
+    ),
+    th: ({node, ...p}) => (
+      <th
+        className="bg-white/5 text-[#00f2ff] p-3 text-left font-black uppercase tracking-tighter border-b border-white/5"
+        {...p}
+      />
+    ),
+    td: ({node, ...p}) => (
+      <td
+        className="p-3 border-t border-white/5 text-white/60"
+        {...p}
+      />
+    ),
+    ul: ({node, ...p}) => (
+      <ul className="list-disc ml-4 space-y-2 my-4" {...p} />
+    ),
+    li: ({node, ...p}) => <li className="text-white/70" {...p} />
   };
 
   if (!hasMounted) return null;
@@ -152,12 +211,13 @@ export default function WarRoom({
               return (
                 <motion.div
                   key={sector.id}
+                  onClick={() => setActiveDept(sector.id)}
                   animate={
                     isActive
                       ? { scale: 1.02, filter: "brightness(1.2)" }
                       : { scale: 1 }
                   }
-                  className={`p-3 rounded-xl border flex flex-col gap-2 transition-all duration-300 relative overflow-hidden cursor-default
+                  className={`p-3 rounded-xl border flex flex-col gap-2 transition-all duration-300 relative overflow-hidden cursor-pointer
                     ${
                       isActive
                         ? "bg-[#00f2ff]/5 shadow-[0_0_15px_rgba(0,242,255,0.1)]"
@@ -257,47 +317,7 @@ export default function WarRoom({
                 >
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    components={{
-                      h1: (p) => (
-                        <h1
-                          className="text-lg font-black text-white uppercase mb-4 border-b border-white/10 pb-2"
-                          {...p}
-                        />
-                      ),
-                      h3: (p) => (
-                        <h3
-                          className="text-[#00f2ff] font-bold uppercase mt-4 mb-2 tracking-widest"
-                          {...p}
-                        />
-                      ),
-                      code: (p) => (
-                        <code
-                          className="bg-[#111] px-2 py-1 text-[#ff80bf] rounded border border-white/5 text-[12px] terminal-literal"
-                          {...p}
-                        />
-                      ),
-                      table: (p) => (
-                        <div className="overflow-x-auto my-6 border border-white/5 rounded-lg">
-                          <table className="min-w-full text-[11px]" {...p} />
-                        </div>
-                      ),
-                      th: (p) => (
-                        <th
-                          className="bg-white/5 text-[#00f2ff] p-3 text-left font-black uppercase tracking-tighter border-b border-white/5"
-                          {...p}
-                        />
-                      ),
-                      td: (p) => (
-                        <td
-                          className="p-3 border-t border-white/5 text-white/60"
-                          {...p}
-                        />
-                      ),
-                      ul: (p) => (
-                        <ul className="list-disc ml-4 space-y-2 my-4" {...p} />
-                      ),
-                      li: (p) => <li className="text-white/70" {...p} />
-                    }}
+                    components={markdownComponents}
                   >
                     {log.content}
                   </ReactMarkdown>
@@ -352,7 +372,7 @@ export default function WarRoom({
               {isProcessing ? (
                 <Activity className="animate-spin" />
               ) : (
-                <Zap size={24} fill="currentColor" />
+                <Send size={24} fill="currentColor" />
               )}
             </button>
           </div>
@@ -361,4 +381,3 @@ export default function WarRoom({
     </div>
   );
 }
-

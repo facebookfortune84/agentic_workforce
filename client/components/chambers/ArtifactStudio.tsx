@@ -3,12 +3,11 @@
  * STYLE: CAFFEINE-NEON / HIGH-VISIBILITY / PRODUCTION-HARDENED
  * ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
  * STATUS: PRODUCTION READY - LIVE SHARD TRACKING - TRUTH VALIDATED
- * PATH: F:/agentic_workforce/client/components/chambers/ArtifactStudio.tsx
  */
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   FileText, Save, Eye, RefreshCw, HardDrive,
@@ -17,12 +16,32 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// --- TYPES & INTERFACES ---
+interface ArtifactFile {
+  path: string;
+  content: string;
+  type: string;
+  hash: string;
+  size: string;
+}
+
+interface VaultConfig {
+  url: string;
+  key: string;
+}
+
+interface LatticeNode {
+  id: string;
+  category: string;
+  path?: string;
+}
+
 export default function ArtifactStudio() {
   // --- STATE ---
   const [files, setFiles] = useState<string[]>([]);
   const [recentArtifacts, setRecentArtifacts] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentFile, setCurrentFile] = useState({
+  const [currentFile, setCurrentFile] = useState<ArtifactFile>({
     path: "",
     content: "",
     type: "code",
@@ -31,7 +50,7 @@ export default function ArtifactStudio() {
   });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [config, setConfig] = useState({ url: "", key: "" });
+  const [config, setConfig] = useState<VaultConfig>({ url: "", key: "" });
 
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
@@ -39,7 +58,7 @@ export default function ArtifactStudio() {
   // --- HYDRATION ---
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const url = localStorage.getItem("RF_URL") || "http://localhost:8000";
+      const url = localStorage.getItem("RF_URL") || "https://glowfly-sizeable-lazaro.ngrok-free.dev";
       const key = localStorage.getItem("RF_KEY") || "sk-realm-god-mode-888";
       setConfig({ url, key });
       if (url) scanLattice(url, key);
@@ -74,20 +93,20 @@ export default function ArtifactStudio() {
       setFiles(staticFiles);
 
       const res = await axios.get(`${cleanUrl}/api/v1/graph`, {
-        headers: { "X-API-Key": key }
+        headers: { "X-API-Key": key, "ngrok-skip-browser-warning": "69420" }
       });
 
       if (res.data?.nodes) {
         const artifacts = res.data.nodes
-          .filter((n: any) =>
+          .filter((n: LatticeNode) =>
             ["ARTIFACT", "LOGIC", "FILE"].includes(n.category)
           )
-          .map((n: any) => n.path || n.id);
+          .map((n: LatticeNode) => n.path || n.id);
 
         setRecentArtifacts(artifacts.slice(0, 15));
       }
-    } catch {
-      console.error("LATTICE_INDEX_FAULT");
+    } catch (e) {
+      console.error("LATTICE_INDEX_FAULT", e);
     } finally {
       setLoading(false);
     }
@@ -121,8 +140,8 @@ export default function ArtifactStudio() {
             `${(res.data.content.length / 1024).toFixed(1)} KB`
         });
       }
-    } catch {
-      console.error("ARTIFACT_READ_ERROR");
+    } catch (e) {
+      console.error("ARTIFACT_READ_ERROR", e);
     } finally {
       setLoading(false);
     }
@@ -142,7 +161,8 @@ export default function ArtifactStudio() {
       );
 
       await scanLattice(config.url, config.key);
-    } catch {
+    } catch (e) {
+      console.error("COMMIT_FAULT", e);
       alert("PHYSICAL_COMMIT_FAULT: Verification required.");
     } finally {
       setLoading(false);
@@ -171,6 +191,8 @@ export default function ArtifactStudio() {
           <button
             onClick={() => scanLattice(config.url, config.key)}
             className="p-2 hover:bg-[#00f2ff]/20 rounded-lg transition-all"
+            title="Refresh Vault"
+            aria-label="Refresh Vault"
           >
             <RefreshCw
               size={14}
