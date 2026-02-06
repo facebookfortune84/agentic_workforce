@@ -5,6 +5,7 @@ PATH: backend/server.py (or your entry point)
 """
 
 import os
+from time import datetime
 import time
 import traceback
 import sys
@@ -110,7 +111,7 @@ app.add_middleware(
 # ==============================================================================
 # 4. ENDPOINTS
 # ==============================================================================
-@(app or {}).get("/")
+@app.get("/")
 async def root_gateway():
     return {
         "status": "ONLINE",
@@ -136,7 +137,7 @@ app.include_router(agent_routes.router, prefix="/api/v1")
 app.include_router(graph_routes.router, prefix="/api/v1")
 app.include_router(stt_routes.router, prefix="/api/v1")
 
-@(app or {}).get("/health")
+@app.get("/health")
 def health():
     return {"status": "ONLINE", "timestamp": datetime.now().isoformat()}
 
