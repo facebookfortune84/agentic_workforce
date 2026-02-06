@@ -1,5 +1,5 @@
 /**
- * REALM FORGE: TITAN WAR ROOM v60.5
+ * REALM FORGE: TITAN WAR ROOM v60.6 [PERFORMANCE HARDENED]
  * STYLE: CAFFEINE-NEON / HIGH-VISIBILITY / PRODUCTION-HARDENED
  * ARCHITECT: LEAD SWARM ENGINEER (MASTERMIND v31.4)
  */
@@ -82,25 +82,39 @@ export default function WarRoom({
   const [roster, setRoster] = useState<Agent[]>([]);
   const [activeDept, setActiveDept] = useState("Architect");
   const [hasMounted, setHasMounted] = useState(false);
+  const [isAutoScroll, setIsAutoScroll] = useState(true);
 
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  // --- TITAN PERFORMANCE SCROLL SYSTEM ---
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- INITIALIZATION ---
+  const scrollToBottom = useCallback(() => {
+    if (isAutoScroll && scrollContainerRef.current) {
+      const { scrollHeight, clientHeight } = scrollContainerRef.current;
+      // High-performance direct scroll bypasses expensive Layout Recalcs
+      scrollContainerRef.current.scrollTo({
+        top: scrollHeight - clientHeight,
+        behavior: logs.length > 30 ? "auto" : "smooth" 
+      });
+    }
+  }, [logs.length, isAutoScroll]);
+
+  // Detect user scroll to pause auto-scroll
+  const handleUserScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+    const distanceToBottom = scrollHeight - scrollTop - clientHeight;
+    // If user scrolls up more than 100px, disable auto-scroll
+    setIsAutoScroll(distanceToBottom < 100);
+  };
+
   useEffect(() => {
     setHasMounted(true);
     if (typeof window !== "undefined") fetchRoster();
   }, []);
 
-  // --- AUTO-SCROLL ---
-  const scrollToBottom = useCallback(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, []);
-
   useEffect(() => {
     if (hasMounted && logs.length > 0) {
-      const t = setTimeout(scrollToBottom, 80);
+      const t = setTimeout(scrollToBottom, 50);
       return () => clearTimeout(t);
     }
   }, [logs, hasMounted, scrollToBottom]);
@@ -122,32 +136,23 @@ export default function WarRoom({
     }
   };
 
-  // --- SEND DIRECTIVE ---
   const handleDirective = () => {
     if (!task.trim() || isProcessing) return;
     onSend(task);
     setTask("");
+    setIsAutoScroll(true); // Force scroll on new user message
   };
 
   // --- MARKDOWN RENDERERS ---
   const markdownComponents: Components = {
     h1: ({node, ...p}) => (
-      <h1
-        className="text-lg font-black text-white uppercase mb-4 border-b border-white/10 pb-2"
-        {...p}
-      />
+      <h1 className="text-lg font-black text-white uppercase mb-4 border-b border-white/10 pb-2" {...p} />
     ),
     h3: ({node, ...p}) => (
-      <h3
-        className="text-[#00f2ff] font-bold uppercase mt-4 mb-2 tracking-widest"
-        {...p}
-      />
+      <h3 className="text-[#00f2ff] font-bold uppercase mt-4 mb-2 tracking-widest" {...p} />
     ),
     code: ({node, ...p}) => (
-      <code
-        className="bg-[#111] px-2 py-1 text-[#ff80bf] rounded border border-white/5 text-[12px] terminal-literal"
-        {...p}
-      />
+      <code className="bg-[#111] px-2 py-1 text-[#ff80bf] rounded border border-white/5 text-[12px] terminal-literal" {...p} />
     ),
     table: ({node, ...p}) => (
       <div className="overflow-x-auto my-6 border border-white/5 rounded-lg">
@@ -155,16 +160,10 @@ export default function WarRoom({
       </div>
     ),
     th: ({node, ...p}) => (
-      <th
-        className="bg-white/5 text-[#00f2ff] p-3 text-left font-black uppercase tracking-tighter border-b border-white/5"
-        {...p}
-      />
+      <th className="bg-white/5 text-[#00f2ff] p-3 text-left font-black uppercase tracking-tighter border-b border-white/5" {...p} />
     ),
     td: ({node, ...p}) => (
-      <td
-        className="p-3 border-t border-white/5 text-white/60"
-        {...p}
-      />
+      <td className="p-3 border-t border-white/5 text-white/60" {...p} />
     ),
     ul: ({node, ...p}) => (
       <ul className="list-disc ml-4 space-y-2 my-4" {...p} />
@@ -188,11 +187,7 @@ export default function WarRoom({
                 : "border-[#00f2ff]/30 text-[#00f2ff]/60 hover:border-[#00f2ff] hover:text-[#00f2ff] bg-white/5"
             }`}
         >
-          {audioUnlocked ? (
-            <Volume2 size={18} className="animate-pulse" />
-          ) : (
-            <VolumeX size={18} />
-          )}
+          {audioUnlocked ? <Volume2 size={18} className="animate-pulse" /> : <VolumeX size={18} />}
           {audioUnlocked ? "VOCAL_CORE: STABLE" : "INIT_SENSORY_LINK"}
         </button>
 
@@ -207,38 +202,20 @@ export default function WarRoom({
           <div className="grid grid-cols-2 gap-2 overflow-y-auto pr-1 scrollbar-hide">
             {SECTOR_METADATA.map((sector) => {
               const isActive = activeDept === sector.id;
-
               return (
                 <motion.div
                   key={sector.id}
                   onClick={() => setActiveDept(sector.id)}
-                  animate={
-                    isActive
-                      ? { scale: 1.02, filter: "brightness(1.2)" }
-                      : { scale: 1 }
-                  }
+                  animate={isActive ? { scale: 1.02, filter: "brightness(1.2)" } : { scale: 1 }}
                   className={`p-3 rounded-xl border flex flex-col gap-2 transition-all duration-300 relative overflow-hidden cursor-pointer
-                    ${
-                      isActive
-                        ? "bg-[#00f2ff]/5 shadow-[0_0_15px_rgba(0,242,255,0.1)]"
-                        : "bg-white/5 border-white/5 opacity-40 hover:opacity-100"
-                    }`}
+                    ${isActive ? "bg-[#00f2ff]/5 shadow-[0_0_15px_rgba(0,242,255,0.1)]" : "bg-white/5 border-white/5 opacity-40 hover:opacity-100"}`}
                   style={isActive ? { borderColor: sector.color } : {}}
                 >
                   <div className="flex items-center justify-between">
-                    <div style={{ color: isActive ? sector.color : "#444" }}>
-                      {sector.icon}
-                    </div>
-                    {isActive && (
-                      <Zap size={10} className="text-[#ff80bf] animate-pulse" />
-                    )}
+                    <div style={{ color: isActive ? sector.color : "#444" }}>{sector.icon}</div>
+                    {isActive && <Zap size={10} className="text-[#ff80bf] animate-pulse" />}
                   </div>
-
-                  <div
-                    className={`text-[9px] font-black uppercase tracking-widest ${
-                      isActive ? "text-white" : "text-white/20"
-                    }`}
-                  >
+                  <div className={`text-[9px] font-black uppercase tracking-widest ${isActive ? "text-white" : "text-white/20"}`}>
                     {sector.label}
                   </div>
                 </motion.div>
@@ -262,71 +239,62 @@ export default function WarRoom({
             {participants.length > 0 && (
               <div className="flex items-center gap-2 ml-4 pl-4 border-l border-white/10">
                 <Users size={12} className="text-[#00f2ff]" />
-                <span className="text-[8px] text-white/40">
-                  {participants.length} ASSEMBLED
-                </span>
+                <span className="text-[8px] text-white/40">{participants.length} ASSEMBLED</span>
               </div>
             )}
           </div>
 
-          {isProcessing && (
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-ping" />
-              <span className="text-[9px] font-black text-[#00f2ff] uppercase tracking-widest">
-                Strike_In_Progress
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-4">
+            {!isAutoScroll && (
+                <button 
+                    onClick={() => { setIsAutoScroll(true); scrollToBottom(); }}
+                    className="px-2 py-1 bg-[#ff80bf]/20 border border-[#ff80bf]/40 text-[#ff80bf] text-[8px] font-black uppercase rounded animate-pulse"
+                >
+                    Resume_Auto_Scroll
+                </button>
+            )}
+            {isProcessing && (
+                <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-ping" />
+                    <span className="text-[9px] font-black text-[#00f2ff] uppercase tracking-widest">Strike_In_Progress</span>
+                </div>
+            )}
+          </div>
         </div>
 
-        {/* LOG STREAM */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide scroll-smooth">
+        {/* LOG STREAM — REFACTORED FOR HIGH PERFORMANCE */}
+        <div 
+          ref={scrollContainerRef}
+          onScroll={handleUserScroll}
+          className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide scroll-smooth"
+        >
           <AnimatePresence initial={false} mode="popLayout">
             {logs.map((log, i) => (
               <motion.div
                 key={log.id || `log-${i}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`flex flex-col ${
-                  log.type === "user" ? "items-end" : "items-start"
-                }`}
+                className={`flex flex-col ${log.type === "user" ? "items-end" : "items-start"}`}
               >
-                <div
-                  className={`flex items-center gap-3 mb-2 opacity-40 text-[9px] font-black uppercase tracking-widest ${
-                    log.type === "user" ? "text-[#ff80bf]" : "text-[#00f2ff]"
-                  }`}
-                >
-                  <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                    {log.agent}
-                  </span>
-                  {log.node && (
-                    <span className="text-[#ff80bf]/50">{log.node}</span>
-                  )}
-                  <span className="font-mono text-white/20 ml-auto">
-                    {log.timestamp}
-                  </span>
+                <div className={`flex items-center gap-3 mb-2 opacity-40 text-[9px] font-black uppercase tracking-widest ${log.type === "user" ? "text-[#ff80bf]" : "text-[#00f2ff]"}`}>
+                  <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">{log.agent}</span>
+                  {log.node && <span className="text-[#ff80bf]/50">{log.node}</span>}
+                  <span className="font-mono text-white/20 ml-auto">{log.timestamp}</span>
                 </div>
 
-                <div
-                  className={`p-6 rounded-2xl text-[13px] leading-relaxed max-w-[95%] font-mono border transition-all selection:bg-white selection:text-black
-                    ${
-                      log.type === "user"
+                <div className={`p-6 rounded-2xl text-[13px] leading-relaxed max-w-[95%] font-mono border transition-all selection:bg-white selection:text-black
+                    ${log.type === "user"
                         ? "bg-[#ff80bf]/5 border-[#ff80bf]/20 text-white shadow-[0_0_30px_rgba(255,128,191,0.05)]"
                         : "bg-[#050505] border-white/5 text-slate-300 shadow-xl"
                     }`}
                 >
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={markdownComponents}
-                  >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                     {log.content}
                   </ReactMarkdown>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
-
-          <div ref={chatEndRef} className="h-4 w-full" />
         </div>
 
         {/* INPUT BAR */}
@@ -346,17 +314,10 @@ export default function WarRoom({
                 className="w-full bg-transparent text-[#00f2ff] font-mono text-sm outline-none resize-none h-14 scrollbar-hide placeholder:text-white/10"
                 disabled={isProcessing}
               />
-
               <div className="flex justify-between mt-2 text-[8px] uppercase font-black tracking-widest text-white/10">
                 <div className="flex gap-4">
-                  <span className="text-[#00f2ff]/40">
-                    Neural Link: Secure_AES_256
-                  </span>
-                  <span
-                    className={
-                      isProcessing ? "text-[#ff80bf] animate-pulse" : ""
-                    }
-                  >
+                  <span className="text-[#00f2ff]/40">Neural Link: Secure_AES_256</span>
+                  <span className={isProcessing ? "text-[#ff80bf] animate-pulse" : ""}>
                     {isProcessing ? "LATTICE: BUSY" : "LATTICE: READY"}
                   </span>
                 </div>
@@ -369,11 +330,7 @@ export default function WarRoom({
               disabled={isProcessing || !task.trim()}
               className="w-14 h-14 bg-[#00f2ff] text-black flex items-center justify-center rounded-2xl hover:bg-white transition-all shadow-[0_0_25px_#00f2ff] disabled:opacity-10 active:scale-90"
             >
-              {isProcessing ? (
-                <Activity className="animate-spin" />
-              ) : (
-                <Send size={24} fill="currentColor" />
-              )}
+              {isProcessing ? <Activity className="animate-spin" /> : <Send size={24} fill="currentColor" />}
             </button>
           </div>
         </div>
