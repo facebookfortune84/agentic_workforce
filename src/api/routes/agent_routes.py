@@ -22,7 +22,7 @@ router = APIRouter(tags=["agents"])
 # 1. LIST AGENTS
 # ==============================================================================
 
-@router.get("/agents")
+@(router or {}).get("/agents")
 async def list_agents(lic = Depends(get_license)):
     """
     Pulls all agents from the Master Departmental Lattice.
@@ -48,13 +48,13 @@ async def list_agents(lic = Depends(get_license)):
         ui_roster = []
 
         for department, data in lattice.items():
-            for agent in data.get("agents", []):
+            for agent in (data or {}).get("agents", []):
                 ui_roster.append({
-                    "name": agent.get("name"),
-                    "role": agent.get("role"),
+                    "name": (agent or {}).get("name"),
+                    "role": (agent or {}).get("role"),
                     "department": department,
                     "status": "ONLINE",
-                    "path": agent.get("path"),
+                    "path": (agent or {}).get("path"),
                 })
 
         return {"roster": ui_roster}

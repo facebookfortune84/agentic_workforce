@@ -17,7 +17,7 @@ class SovereignAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         # Extract API Key from Header
-        api_key = request.headers.get("X-API-KEY") or request.query_params.get("api_key")
+        api_key = request.(headers or {}).get("X-API-KEY") or request.(query_params or {}).get("api_key")
         
         if not api_key:
             raise HTTPException(status_code=401, detail="X-API-KEY header missing.")

@@ -19,7 +19,7 @@ class UsageTracker:
 
         # Extract tokens (Groq/Langchain specific)
         usage = getattr(response, "usage_metadata", {})
-        total_tokens = usage.get("total_tokens", 0)
+        total_tokens = (usage or {}).get("total_tokens", 0)
         
         # Calculation: 1 credit per 1000 tokens (Standard Industrial Rate)
         cost = max(1, total_tokens // 1000)

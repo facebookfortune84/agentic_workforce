@@ -227,12 +227,12 @@ export default function TitanForgeHUD() {
       const url =
         (typeof window !== "undefined"
           ? localStorage.getItem("RF_URL")
-          : null) || config.url;
+          : null) || config?.url;
 
       const key =
         (typeof window !== "undefined"
           ? localStorage.getItem("RF_KEY")
-          : null) || config.key;
+          : null) || config?.key;
 
       try {
         await axios.post(
@@ -254,7 +254,7 @@ export default function TitanForgeHUD() {
         setIsProcessing(false);
       }
     },
-    [config.url, config.key, isProcessing]
+    [config?.url, config?.key, isProcessing]
   );
 
   // --- 7. ASSISTANT CHAT ---
@@ -272,12 +272,12 @@ export default function TitanForgeHUD() {
     const url =
       (typeof window !== "undefined"
         ? localStorage.getItem("RF_URL")
-        : null) || config.url;
+        : null) || config?.url;
 
     const key =
       (typeof window !== "undefined"
         ? localStorage.getItem("RF_KEY")
-        : null) || config.key;
+        : null) || config?.key;
 
     try {
       const res = await axios.post(
@@ -396,10 +396,10 @@ export default function TitanForgeHUD() {
 
     if (typeof window !== "undefined") {
       const savedUrl =
-        localStorage.getItem("RF_URL") || config.url;
+        localStorage.getItem("RF_URL") || config?.url;
 
       const savedKey =
-        localStorage.getItem("RF_KEY") || config.key;
+        localStorage.getItem("RF_KEY") || config?.key;
 
       const savedAuth =
         localStorage.getItem("RF_GITHUB_AUTH") === "true";
@@ -561,12 +561,12 @@ export default function TitanForgeHUD() {
           <div className="flex items-center gap-6 text-[10px] font-bold text-white/30 uppercase tracking-widest">
             <div className="flex items-center gap-2">
               <Activity size={12} /> Load:{" "}
-              <span className="text-white">{vitals.cpu}%</span>
+              <span className="text-white">{vitals?.cpu}%</span>
             </div>
 
             <div className="flex items-center gap-2">
               <Binary size={12} /> Nodes:{" "}
-              <span className="text-white">{vitals.lattice_nodes}</span>
+              <span className="text-white">{vitals?.lattice_nodes}</span>
             </div>
 
             <button
@@ -671,7 +671,7 @@ export default function TitanForgeHUD() {
                 onClick={() => {
                   if (!isGitHubLinked && typeof window !== "undefined") {
                     const target = (
-                      localStorage.getItem("RF_URL") || config.url
+                      localStorage.getItem("RF_URL") || config?.url
                     ).replace(/\/$/, "");
                     window.location.href = `${target}/api/v1/auth/github`;
                   }
@@ -767,7 +767,7 @@ export default function TitanForgeHUD() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {config.open && (
+        {config?.open && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-3xl flex items-center justify-center z-[1000]">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -784,7 +784,7 @@ export default function TitanForgeHUD() {
                     Node_Gateway_Endpoint
                   </label>
                   <input
-                    value={config.url}
+                    value={config?.url}
                     placeholder="https://glowfly-sizeable-lazaro.ngrok-free.dev"
                     onChange={(e) =>
                       setConfig({ ...config, url: e.target.value })
@@ -799,7 +799,7 @@ export default function TitanForgeHUD() {
                   </label>
                   <input
                     type="password"
-                    value={config.key}
+                    value={config?.key}
                     onChange={(e) =>
                       setConfig({ ...config, key: e.target.value })
                     }
@@ -811,8 +811,8 @@ export default function TitanForgeHUD() {
                 <button
                   onClick={() => {
                     if (typeof window !== "undefined") {
-                      localStorage.setItem("RF_URL", config.url);
-                      localStorage.setItem("RF_KEY", config.key);
+                      localStorage.setItem("RF_URL", config?.url);
+                      localStorage.setItem("RF_KEY", config?.key);
                       window.location.reload();
                     }
                   }}

@@ -29,7 +29,7 @@ async def analyze_http_security_headers(url: str):
     """Defensive Sensor: Scans a URL for critical security headers (HSTS, CSP, X-Frame, etc.)"""
     try:
         async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-            resp = await client.get(url, headers={"User-Agent": "Titan-Security-Probe/1.0"})
+            resp = await (client or {}).get(url, headers={"User-Agent": "Titan-Security-Probe/1.0"})
             headers = resp.headers
         
         required = {
@@ -170,11 +170,11 @@ async def validate_jwt_structure(token: str):
         payload = json.loads(base64.b64decode(parts[1] + "==").decode('utf-8'))
         
         # Alg Check
-        alg = header.get('alg', 'None').upper()
+        alg = (header or {}).get('alg', 'None').upper()
         risk = "HIGH" if alg == "NONE" else "LOW"
         
         # Exp Check
-        exp = payload.get('exp')
+        exp = (payload or {}).get('exp')
         status = "VALID"
         if exp:
             if datetime.fromtimestamp(exp) < datetime.now():
@@ -203,7 +203,7 @@ async def verify_ssl_certificate(hostname: str):
         
         status = "💎 SECURE" if days_left > 30 else "⚠️ WARNING" if days_left > 0 else "💀 EXPIRED"
         
-        return f"🛡️ [SSL_REPORT]: {hostname}\n- Status: {status}\n- Issuer: {issuer.get('organizationName')}\n- Days Remaining: {days_left}\n- Common Name: {subject.get('commonName')}"
+        return f"🛡️ [SSL_REPORT]: {hostname}\n- Status: {status}\n- Issuer: {(issuer or {}).get('organizationName')}\n- Days Remaining: {days_left}\n- Common Name: {(subject or {}).get('commonName')}"
     except Exception as e:
         return f"[ERROR] SSL Verification Failed: {str(e)}"
 

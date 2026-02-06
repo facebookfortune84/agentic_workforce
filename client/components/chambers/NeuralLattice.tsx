@@ -304,7 +304,7 @@ export default function NeuralLattice() {
         <AnimatePresence mode="wait">
           {selectedNode ? (
             <motion.div 
-              key={selectedNode.id}
+              key={selectedNode?.id}
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
               className="space-y-10 overflow-y-auto pr-2 scrollbar-hide flex-1"
             >
@@ -314,43 +314,43 @@ export default function NeuralLattice() {
                    <h4 className="text-[10px] text-[#ff80bf] font-black uppercase tracking-[0.2em]">Node_Identity</h4>
                 </div>
                 <div className="text-xl font-black text-white leading-tight break-all uppercase tracking-tighter italic selection:bg-white selection:text-black">
-                  {selectedNode.label || selectedNode.id}
+                  {selectedNode?.label || selectedNode?.id}
                 </div>
               </section>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
                   <span className="text-[8px] font-black text-white/30 uppercase block mb-1 tracking-widest">Lattice_Class</span>
-                  <span className="text-[11px] font-black text-[#00f2ff] uppercase">{selectedNode.category}</span>
+                  <span className="text-[11px] font-black text-[#00f2ff] uppercase">{selectedNode?.category}</span>
                 </div>
                 <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
                   <span className="text-[8px] font-black text-white/30 uppercase block mb-1 tracking-widest">Silo_Anchor</span>
-                  <span className="text-[11px] font-black text-[#ff80bf] uppercase">{selectedNode.sector}</span>
+                  <span className="text-[11px] font-black text-[#ff80bf] uppercase">{selectedNode?.sector}</span>
                 </div>
               </div>
 
-              {(selectedNode.file_hash || selectedNode.path) && (
+              {(selectedNode?.file_hash || selectedNode?.path) && (
                 <section className="bg-[#00f2ff]/5 border border-[#00f2ff]/20 p-6 rounded-2xl">
                   <h4 className="text-[10px] text-[#00f2ff] font-black uppercase mb-4 flex items-center gap-2">
                     <ShieldCheck size={14} /> IronClad_Forensics
                   </h4>
                   <div className="font-mono space-y-3">
-                    {selectedNode.file_hash && (
+                    {selectedNode?.file_hash && (
                       <div>
                         <span className="text-[8px] text-white/30 uppercase block">Physical_SHA256</span>
-                        <span className="text-[10px] text-[#00f2ff] break-all leading-tight">{selectedNode.file_hash}</span>
+                        <span className="text-[10px] text-[#00f2ff] break-all leading-tight">{selectedNode?.file_hash}</span>
                       </div>
                     )}
-                    {selectedNode.path && (
+                    {selectedNode?.path && (
                       <div>
                         <span className="text-[8px] text-white/30 uppercase block">F:/_Anchor_Path</span>
-                        <span className="text-[10px] text-white/60 break-all">{selectedNode.path}</span>
+                        <span className="text-[10px] text-white/60 break-all">{selectedNode?.path}</span>
                       </div>
                     )}
-                    {selectedNode.last_verified && (
+                    {selectedNode?.last_verified && (
                       <div>
                         <span className="text-[8px] text-white/30 uppercase block">Last_Audit</span>
-                        <span className="text-[10px] text-white">{selectedNode.last_verified}</span>
+                        <span className="text-[10px] text-white">{selectedNode?.last_verified}</span>
                       </div>
                     )}
                   </div>

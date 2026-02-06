@@ -100,7 +100,7 @@ async def push_to_github(file_path: str, content: str, commit_message: str):
 
     async with httpx.AsyncClient() as client:
         try:
-            current = await client.get(url, headers=headers)
+            current = await (client or {}).get(url, headers=headers)
             sha = current.json().get('sha') if current.status_code == 200 else None
             payload = {'message': commit_message, 'content': base64.b64encode(content.encode('utf-8')).decode('utf-8'), 'branch': 'main'}
             if sha: payload['sha'] = sha

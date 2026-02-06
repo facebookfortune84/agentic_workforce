@@ -35,9 +35,9 @@ async def format_newsletter_html(headline: str, articles_json: str):
         for art in articles:
             items_html += f'''
             <div style="margin-bottom: 25px; border-left: 3px solid #b5a642; padding-left: 20px; background: rgba(255,255,255,0.02);">
-                <h3 style="margin: 0; color: #ffffff; font-family: 'Courier New', monospace; text-transform: uppercase;">{art.get('title')}</h3>
-                <p style="color: #a8d4d4; font-size: 14px; line-height: 1.6;">{art.get('snippet')}</p>
-                <a href="{art.get('link')}" style="color: #b5a642; text-decoration: none; font-weight: bold; font-size: 12px;">ACCESS_FULL_INTEL &rarr;</a>
+                <h3 style="margin: 0; color: #ffffff; font-family: 'Courier New', monospace; text-transform: uppercase;">{(art or {}).get('title')}</h3>
+                <p style="color: #a8d4d4; font-size: 14px; line-height: 1.6;">{(art or {}).get('snippet')}</p>
+                <a href="{(art or {}).get('link')}" style="color: #b5a642; text-decoration: none; font-weight: bold; font-size: 12px;">ACCESS_FULL_INTEL &rarr;</a>
             </div>
             '''
         
@@ -71,15 +71,15 @@ async def get_domain_whois(domain: str):
         domain = domain.lower().replace("https://", "").replace("http://", "").split("/")[0]
         api_url = f'https://rdap.org/domain/{domain}'
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(api_url)
+            resp = await (client or {}).get(api_url)
             if resp.status_code != 200:
                 return f'⚠️ [WHOIS]: RDAP Lookup failed for {domain}. Server might be restricted.'
             data = resp.json()
             
         summary = {
-            "handle": data.get("handle"),
-            "registrar": next((e.get("vcardArray", [None, [[None, None, None, "Unknown"]]])[1][1][3] for e in data.get("entities", []) if "registrar" in e.get("roles", [])), "Unknown"),
-            "events": {ev.get("eventAction"): ev.get("eventDate") for ev in data.get("events", [])}
+            "handle": (data or {}).get("handle"),
+            "registrar": next(((e or {}).get("vcardArray", [None, [[None, None, None, "Unknown"]]])[1][1][3] for e in (data or {}).get("entities", []) if "registrar" in (e or {}).get("roles", [])), "Unknown"),
+            "events": {(ev or {}).get("eventAction"): (ev or {}).get("eventDate") for ev in (data or {}).get("events", [])}
         }
         return f'🌐 [WHOIS_INTEL]: {domain}\n{json.dumps(summary, indent=2)}'
     except Exception as e:
@@ -95,7 +95,7 @@ async def scrape_url_to_markdown(url: str):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
         }
         async with httpx.AsyncClient(follow_redirects=True, timeout=15.0, headers=headers) as client:
-            resp = await client.get(url)
+            resp = await (client or {}).get(url)
             resp.raise_for_status()
             
         h = html2text.HTML2Text()

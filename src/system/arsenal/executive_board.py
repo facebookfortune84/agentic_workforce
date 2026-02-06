@@ -105,8 +105,8 @@ async def mm_get_user_by_name(search_term: str):
     if map_path.exists():
         with open(map_path, 'r') as f:
             lattice = json.load(f)
-            for uname, data in lattice.get("agents", {}).items():
-                if search_term.lower() in uname.lower() or search_term.lower() in data.get('functional_name', '').lower():
+            for uname, data in (lattice or {}).get("agents", {}).items():
+                if search_term.lower() in uname.lower() or search_term.lower() in (data or {}).get('functional_name', '').lower():
                     return f"REAL_DATA_FOUND: username='{uname}' id='{data['channel_id']}'"
 
     # 2. Live API Search
@@ -116,7 +116,7 @@ async def mm_get_user_by_name(search_term: str):
         data = resp.json()
         if data and len(data) > 0:
             user = data[0].get('user', {})
-            return f"REAL_DATA_FOUND: username='{user.get('username')}' id='{user.get('id')}'"
+            return f"REAL_DATA_FOUND: username='{(user or {}).get('username')}' id='{(user or {}).get('id')}'"
             
     return f"❌ [NOT_FOUND]: Specialist '{search_term}' is not mapped in the lattice."
 
@@ -173,7 +173,7 @@ async def transmit_workforce_message(channel: str, message: str):
     if map_path.exists():
         with open(map_path, 'r') as f:
             lattice = json.load(f)
-            channel_id = lattice.get("sectors", {}).get(channel.lower().replace("#", "").replace("_", "-"))
+            channel_id = (lattice or {}).get("sectors", {}).get(channel.lower().replace("#", "").replace("_", "-"))
 
     if not channel_id:
         guild_id = os.getenv("DISCORD_GUILD_ID")
@@ -195,12 +195,12 @@ async def get_sector_roster(department: str):
     try:
         with open(DATA_DIR / "roster.json", 'r', encoding='utf-8-sig') as f:
             data = json.load(f)
-        roster = data.get("roster", [])
-        colleagues = [a for a in roster if department.lower() in a.get('dept', '').lower()]
+        roster = (data or {}).get("roster", [])
+        colleagues = [a for a in roster if department.lower() in (a or {}).get('dept', '').lower()]
         if not colleagues: return f"❌ No specialists located in {department}."
         table = "| Specialist | Role | ID |\n|---|---|---|\n"
         for c in colleagues:
-            table += f"| {c['name']} | {c['role']} | {c.get('id', 'UNK')} |\n"
+            table += f"| {c['name']} | {c['role']} | {(c or {}).get('id', 'UNK')} |\n"
         return f"### [SECTOR_ROSTER: {department}]\n{table}"
     except Exception as e: return f"[ERROR]: {str(e)}"
 

@@ -31,8 +31,8 @@ class MissionEngine:
         2. Hydrates a specialist via the Factory.
         3. Conducts the tool-execution loop.
         """
-        silo = step_data.get("silo", "Architect")
-        action_description = step_data.get("action", "General Analysis")
+        silo = (step_data or {}).get("silo", "Architect")
+        action_description = (step_data or {}).get("action", "General Analysis")
         
         # 1. Hydrate Specialist from the Silo
         agent = AgentFactory.create_random_silo_agent(silo)
@@ -70,7 +70,7 @@ class MissionEngine:
             tool_call = extract_json(content)
             if tool_call and "tool_name" in tool_call:
                 t_name = tool_call["tool_name"]
-                t_args = tool_call.get("args", {})
+                t_args = (tool_call or {}).get("args", {})
                 
                 logger.info(f"ðŸ› ï¸ [TOOL_EXEC] {agent.name} calling {t_name} with {t_args}")
                 
@@ -105,8 +105,8 @@ class MissionEngine:
         """
         Iterates through the entire drafted strategy in the state.
         """
-        strategy = state.get("mission_strategy", {})
-        steps = strategy.get("steps", [])
+        strategy = (state or {}).get("mission_strategy", {})
+        steps = (strategy or {}).get("steps", [])
 
         if not steps:
             logger.warning("No steps found in mission strategy.")

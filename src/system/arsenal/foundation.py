@@ -128,7 +128,7 @@ def get_tools_for_dept(dept_name: str, all_tools_list: list):
                 key = k
                 break
         else: key = "Architect"
-    tool_names = DEPARTMENT_TOOL_MAP.get(key, DEPARTMENT_TOOL_MAP["Architect"])
+    tool_names = (DEPARTMENT_TOOL_MAP or {}).get(key, DEPARTMENT_TOOL_MAP["Architect"])
     return [t for t in all_tools_list if t.name in tool_names]
 
 @tool('read_file')

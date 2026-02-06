@@ -27,7 +27,7 @@ router = APIRouter(tags=["auth"])
 # 1. GITHUB LOGIN (REDIRECT)
 # ==============================================================================
 
-@router.get("/github")
+@(router or {}).get("/github")
 async def github_login():
     """
     Redirects the user to GitHub OAuth authorization page.
@@ -59,7 +59,7 @@ async def github_login():
 # 2. GITHUB CALLBACK
 # ==============================================================================
 
-@router.get("/github/callback")
+@(router or {}).get("/github/callback")
 async def github_callback(code: str):
     """
     Receives GitHub OAuth code and forwards it to the frontend.

@@ -49,8 +49,8 @@ def _normalize_department(name: str) -> str:
 
 def _attach_tools(agent_yaml: Dict[str, Any], department: str) -> List[str]:
     """Assigns tools based on department, with YAML overrides."""
-    default_tools = DEPARTMENT_TOOL_MAP.get(department, [])
-    override_tools = agent_yaml.get("professional", {}).get("tools_assigned", [])
+    default_tools = (DEPARTMENT_TOOL_MAP or {}).get(department, [])
+    override_tools = (agent_yaml or {}).get("professional", {}).get("tools_assigned", [])
 
     # If YAML specifies tools, merge them with defaults
     merged = list(set(default_tools + override_tools))
@@ -75,7 +75,7 @@ def discover_agents(force_reload: bool = False) -> List[Dict[str, Any]]:
             continue
 
         # Extract department
-        dept = data.get("professional", {}).get("department", "Architect")
+        dept = (data or {}).get("professional", {}).get("department", "Architect")
         dept_norm = _normalize_department(dept)
 
         # Attach tools
@@ -83,7 +83,7 @@ def discover_agents(force_reload: bool = False) -> List[Dict[str, Any]]:
 
         # Build agent manifest
         agent_manifest = {
-            "name": data.get("identity", {}).get("full_name", yaml_file.stem),
+            "name": (data or {}).get("identity", {}).get("full_name", yaml_file.stem),
             "path": str(yaml_file),
             "department": dept_norm,
             "tools": tools,

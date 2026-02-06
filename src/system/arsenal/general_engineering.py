@@ -65,7 +65,7 @@ async def analyze_seo_tags(url: str):
     """Marketing Sensor: Scrapes a URL to extract Title, Description, H1s, and Social Meta (OpenGraph/Twitter) for competitive analysis."""
     try:
         async with httpx.AsyncClient(follow_redirects=True, timeout=12.0) as client:
-            resp = await client.get(url, headers={"User-Agent": "Titan-SEO-Crawler/1.0"})
+            resp = await (client or {}).get(url, headers={"User-Agent": "Titan-SEO-Crawler/1.0"})
             resp.raise_for_status()
             
         soup = BeautifulSoup(resp.text, 'html.parser')
@@ -187,7 +187,7 @@ async def check_robots_txt(domain: str):
         domain = domain.lower().replace("https://", "").replace("http://", "").split("/")[0]
         url = f'https://{domain}/robots.txt'
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url)
+            resp = await (client or {}).get(url)
             if resp.status_code != 200:
                 return f'ℹ️ [ROBOTS]: No crawl-policy found for {domain} (Default: Allowed).'
             return f'### [ROBOTS_POLICY]: {domain}\n```\n{resp.text[:1000]}\n```'
@@ -199,10 +199,10 @@ async def check_server_fingerprint(url: str):
     """Cyber Intelligence: Sniffs 'Server' and 'X-Powered-By' headers to identify target infrastructure stack."""
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url)
-            server = resp.headers.get('Server', 'CLOAKED')
-            powered = resp.headers.get('X-Powered-By', 'CLOAKED')
-            via = resp.headers.get('Via', 'NONE')
+            resp = await (client or {}).get(url)
+            server = resp.(headers or {}).get('Server', 'CLOAKED')
+            powered = resp.(headers or {}).get('X-Powered-By', 'CLOAKED')
+            via = resp.(headers or {}).get('Via', 'NONE')
             
             return f'🕵️ [FINGERPRINT]: {url}\n- **Server Software**: {server}\n- **Engine**: {powered}\n- **Gateway/Proxy**: {via}'
     except Exception as e:
@@ -214,7 +214,7 @@ async def check_site_availability(url: str):
     try:
         start = time.time()
         async with httpx.AsyncClient(follow_redirects=True, timeout=10.0) as client:
-            resp = await client.get(url)
+            resp = await (client or {}).get(url)
             latency = (time.time() - start) * 1000
             
             status_icon = '🟢' if resp.status_code == 200 else '🟡'
@@ -386,7 +386,7 @@ async def craft_persuasive_copy(core_message: str, tactic: str):
         'fear': f"🚨 [LIABILITY_ALERT]: Delaying this protocol increases technical debt exposure. Execute: {core_message}",
         'social_proof': f"👥 [SWARM_CONSENSUS]: 1,112 agents have successfully validated this path. Recommendation: {core_message}"
     }
-    result = templates.get(tactic.lower(), f"### [DIRECTIVE]:\n{core_message}")
+    result = (templates or {}).get(tactic.lower(), f"### [DIRECTIVE]:\n{core_message}")
     return f'📢 [PSYCH_TRIGGER_APPLIED]: {tactic.upper()}\n\n{result}'
 
 @tool('create_business_card_qr')
@@ -584,7 +584,7 @@ async def dns_lookup_records(domain: str, record_type: str='A'):
         headers = {'Accept': 'application/dns-json'}
         
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url, headers=headers)
+            resp = await (client or {}).get(url, headers=headers)
             data = resp.json()
             
         if 'Answer' not in data:
@@ -710,8 +710,8 @@ async def generate_corporate_document(doc_type: str, client_name: str, items: Li
                 c.showPage()
                 y = height - 50
             
-            desc = item.get('desc', 'Industrial Data Point')
-            val = item.get('val', '')
+            desc = (item or {}).get('desc', 'Industrial Data Point')
+            val = (item or {}).get('val', '')
             c.drawString(50, y, f"• {desc}: {val}")
             y -= 25
             
@@ -744,7 +744,7 @@ async def generate_industrial_image(prompt: str, filename: str):
         res = client.images.generate(model='dall-e-3', prompt=industrial_prompt, n=1, size='1024x1024')
         
         async with httpx.AsyncClient() as h:
-            data = await h.get(res.data[0].url)
+            data = await (h or {}).get(res.data[0].url)
             path.write_bytes(data.content)
             
         logger.info(f"🎨 [IMAGE_GEN]: Visual artifact manifested at {path}")
@@ -798,7 +798,7 @@ async def generate_mermaid_diagram(focus_node: str=None):
         count = 0
         for u, v, d in sub.edges(data=True):
             if count > 40: break # UI Overflow Guard
-            label = d.get('relation', 'related_to')
+            label = (d or {}).get('relation', 'related_to')
             lines.append(f'    {sanitize_windows_path(u)} -->|{label}| {sanitize_windows_path(v)}')
             count += 1
             
@@ -992,11 +992,11 @@ async def get_market_intelligence(ticker: str):
     try:
         data = yf.Ticker(ticker.upper()).info
         summary = {
-            "name": data.get('longName'),
-            "price": data.get('currentPrice') or data.get('regularMarketPrice'),
-            "marketCap": f"${data.get('marketCap', 0):,}",
-            "revenue": f"${data.get('totalRevenue', 0):,}",
-            "sector": data.get('sector')
+            "name": (data or {}).get('longName'),
+            "price": (data or {}).get('currentPrice') or (data or {}).get('regularMarketPrice'),
+            "marketCap": f"${(data or {}).get('marketCap', 0):,}",
+            "revenue": f"${(data or {}).get('totalRevenue', 0):,}",
+            "sector": (data or {}).get('sector')
         }
         return f'[SUCCESS] [MARKET_INTEL]: {ticker} ➔ {json.dumps(summary, indent=2)}'
     except Exception as e: return f'[ERROR] Intel Fault: {str(e)}'
@@ -1079,7 +1079,7 @@ async def inspect_api_schema(docs_url: str):
     """Intelligence Sensor: Downloads and parses API documentation (Swagger/OpenAPI) to map available endpoints for integration strikes."""
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
-            resp = await client.get(docs_url)
+            resp = await (client or {}).get(docs_url)
             resp.raise_for_status()
             
         # Detect Schema Type
@@ -1132,18 +1132,18 @@ async def ip_geolocation(ip_address: str):
     try:
         url = f'http://ip-api.com/json/{ip_address}?fields=status,message,country,city,isp,lat,lon,proxy'
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url)
+            resp = await (client or {}).get(url)
             data = resp.json()
             
-        if data.get('status') == 'fail':
-            return f"⚠️ [GEO_FAULT]: {data.get('message', 'Unknown Error')}"
+        if (data or {}).get('status') == 'fail':
+            return f"⚠️ [GEO_FAULT]: {(data or {}).get('message', 'Unknown Error')}"
             
         return (
             f"### [IP_INTEL]: {ip_address}\n"
-            f"- **Location**: {data.get('city')}, {data.get('country')}\n"
-            f"- **ISP**: {data.get('isp')}\n"
-            f"- **Coordinates**: {data.get('lat')}, {data.get('lon')}\n"
-            f"- **Proxy/VPN**: {'🚨 DETECTED' if data.get('proxy') else '✅ CLEAN'}"
+            f"- **Location**: {(data or {}).get('city')}, {(data or {}).get('country')}\n"
+            f"- **ISP**: {(data or {}).get('isp')}\n"
+            f"- **Coordinates**: {(data or {}).get('lat')}, {(data or {}).get('lon')}\n"
+            f"- **Proxy/VPN**: {'🚨 DETECTED' if (data or {}).get('proxy') else '✅ CLEAN'}"
         )
     except Exception as e:
         return f'[ERROR] Geo-lookup failed: {str(e)}'
@@ -1217,8 +1217,8 @@ async def query_knowledge_graph(entity: str):
         out_edges = G.edges(target_node, data=True)
         in_edges = G.in_edges(target_node, data=True)
         
-        results = [f"OUT: {u} --[{d.get('relation', 'related')}]--> {v}" for u, v, d in out_edges]
-        results += [f"IN:  {u} --[{d.get('relation', 'related')}]--> {v}" for u, v, d in in_edges]
+        results = [f"OUT: {u} --[{(d or {}).get('relation', 'related')}]--> {v}" for u, v, d in out_edges]
+        results += [f"IN:  {u} --[{(d or {}).get('relation', 'related')}]--> {v}" for u, v, d in in_edges]
         
         return f'### [LATTICE_RECON]: {target_node}\n' + '\n'.join(results[:30])
     except Exception as e: return f'[ERROR] Graph Query Failed: {str(e)}'
@@ -1346,7 +1346,7 @@ async def spawn_ephemeral_agent(task_description: str, tools_needed: str):
     """Sovereign Logic: Spawns a temporary sub-process agent to solve a micro-task. Verifies Gateway status before deployment."""
     try:
         async with httpx.AsyncClient() as client:
-            res = await client.get('http://localhost:8000/health', timeout=5.0)
+            res = await (client or {}).get('http://localhost:8000/health', timeout=5.0)
             if res.status_code != 200:
                 return '[ERROR]: Sovereign Gateway unreachable. Deployment aborted.'
         
@@ -1522,7 +1522,7 @@ async def spawn_autonomous_agent(name: str, role: str, department: str, backstor
         
         # Linked from current context
         from src.system.actions import DEPARTMENT_TOOL_MAP
-        tools = DEPARTMENT_TOOL_MAP.get(dept_key, DEPARTMENT_TOOL_MAP.get("Architect", []))
+        tools = (DEPARTMENT_TOOL_MAP or {}).get(dept_key, (DEPARTMENT_TOOL_MAP or {}).get("Architect", []))
         
         emp_id = f"AI-GEN-NEU-{int(time.time() % 100000)}"
         dna = {

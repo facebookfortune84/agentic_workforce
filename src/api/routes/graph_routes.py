@@ -22,7 +22,7 @@ router = APIRouter(tags=["graph"])
 # 1. GET LATTICE GRAPH
 # ==============================================================================
 
-@router.get("/graph")
+@(router or {}).get("/graph")
 async def get_lattice_data(lic = Depends(get_license)):
     """
     Returns the neural lattice graph used by the HUD visualization.

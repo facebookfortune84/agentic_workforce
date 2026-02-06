@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/v1/ingress", tags=["ingress"])
 async def discord_ingress(request: Request, x_signature: str = Header(None)):
     """Receives triggers from Discord and launches a mission."""
     data = await request.json()
-    content = data.get("content", "")
+    content = (data or {}).get("content", "")
     
     if not content:
         return {"status": "IGNORED", "reason": "Empty payload"}
@@ -25,7 +25,7 @@ async def discord_ingress(request: Request, x_signature: str = Header(None)):
     import asyncio
     asyncio.create_task(orchestrator.execute_multi_agent_strike(
         directive=content,
-        user_id=f"DISCORD_USER_{data.get('author', {}).get('id')}"
+        user_id=f"DISCORD_USER_{(data or {}).get('author', {}).get('id')}"
     ))
 
     return {"status": "MISSION_IGNITED", "mission_id": mission_id}

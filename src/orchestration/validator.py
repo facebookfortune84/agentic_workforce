@@ -47,7 +47,7 @@ def validate_workforce_integrity():
             report["broken_manifests"].append(f"{name}: Schema Mismatch - {str(e)}")
 
         # 2. Arsenal Alignment (checks if tools in YAML exist in registry.py)
-        assigned_tools = raw_data.get("professional", {}).get("tools_assigned", [])
+        assigned_tools = (raw_data or {}).get("professional", {}).get("tools_assigned", [])
         for t in assigned_tools:
             if t not in arsenal_names:
                 report["missing_tools"].add(t)

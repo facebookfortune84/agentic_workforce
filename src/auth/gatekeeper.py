@@ -126,7 +126,7 @@ async def generate_key(user_id: str, tier: str = "FREE", custom_metadata: Dict =
         "TITAN": 500000,
         "GOD": 999999999
     }
-    initial_credits = allotment.get(tier, 100)
+    initial_credits = (allotment or {}).get(tier, 100)
     meta_json = json.dumps(custom_metadata or {})
     
     try:

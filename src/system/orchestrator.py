@@ -93,7 +93,7 @@ class MissionOrchestrator:
         state["mission_strategy"] = strategy
 
         # TITAN-HARDENED: Safely get the mission title
-        title = strategy.get('mission_title', 'UNKNOWN_STRIKE')
+        title = (strategy or {}).get('mission_title', 'UNKNOWN_STRIKE')
         logger.info(
             f"🚀 [ORCHESTRATOR] Strike {state['mission_id']} Initiated: {title}"
         )
@@ -102,8 +102,8 @@ class MissionOrchestrator:
         final_state = await brain_graph.ainvoke(state)
 
         # 4. Final Audit - Guarded against missing strategy keys
-        steps_count = len(strategy.get('steps', []))
-        silos_count = len(strategy.get('required_silos', []))
+        steps_count = len((strategy or {}).get('steps', []))
+        silos_count = len((strategy or {}).get('required_silos', []))
 
         await self.memory.commit_mission_event(
             mission_id=final_state["mission_id"],
@@ -139,8 +139,8 @@ class MissionOrchestrator:
             if not p or not isinstance(p, dict):
                 continue
                 
-            p_name = p.get('name', 'Unknown_Specialist')
-            p_role = p.get('role', 'Expert')
+            p_name = (p or {}).get('name', 'Unknown_Specialist')
+            p_role = (p or {}).get('role', 'Expert')
 
             prompt = f"""
             IDENTITY: {p_name} | ROLE: {p_role}

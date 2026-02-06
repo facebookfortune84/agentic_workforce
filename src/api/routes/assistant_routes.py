@@ -71,7 +71,7 @@ async def assistant_chat(
         )
 
         return {
-            "response": res.choices[0].message.content
+            "response": res.getattr(getattr(getattr(res, 'choices', [None])[0], 'message', None), 'content', '')
         }
 
     except Exception as e:

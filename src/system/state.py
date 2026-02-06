@@ -20,11 +20,11 @@ def merge_tasks(existing: List[Dict], new: List[Dict]) -> List[Dict]:
     if not isinstance(existing, list): existing = []
     if not isinstance(new, list): new = []
     
-    task_map = {t.get('id'): t for t in existing if t.get('id')}
+    task_map = {(t or {}).get('id'): t for t in existing if (t or {}).get('id')}
     
     for t in new:
         if not isinstance(t, dict): continue
-        tid = t.get('id') or f"task_{uuid.uuid4().hex[:6]}"
+        tid = (t or {}).get('id') or f"task_{uuid.uuid4().hex[:6]}"
         t['id'] = tid
         
         if tid in task_map:
@@ -34,7 +34,7 @@ def merge_tasks(existing: List[Dict], new: List[Dict]) -> List[Dict]:
 
     return sorted(
         list(task_map.values()), 
-        key=lambda x: (x.get('status', 'OPEN') != 'OPEN', x.get('priority', 'MEDIUM'), x.get('id', ''))
+        key=lambda x: ((x or {}).get('status', 'OPEN') != 'OPEN', (x or {}).get('priority', 'MEDIUM'), (x or {}).get('id', ''))
     )
 
 def merge_vitals(existing: Dict, new: Dict) -> Dict:

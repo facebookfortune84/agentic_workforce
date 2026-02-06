@@ -125,15 +125,15 @@ export default function ArsenalManager() {
 
   // --- 3. AI FORGE LOGIC ---
   const forgeToolWithAI = async () => {
-    if (!toolRequest || !config.url) return;
+    if (!toolRequest || !config?.url) return;
     setIsForging(true);
     setDiagnosticLogs(p => [...p, `> [FORGE]: Drafting AI logic for: ${toolRequest.slice(0, 25)}...`]);
     
     try {
-        const cleanUrl = config.url.replace(/\/$/, "");
+        const cleanUrl = config?.url.replace(/\/$/, "");
         await axios.post(`${cleanUrl}/api/v1/mission`, {
             task: `ForgeMaster, physically draft a production-grade Python @tool for this requirement: "${toolRequest}".`
-        }, { headers: { "X-API-Key": config.key, 'ngrok-skip-browser-warning': '69420' } });
+        }, { headers: { "X-API-Key": config?.key, 'ngrok-skip-browser-warning': '69420' } });
         
         setDiagnosticLogs(p => [...p, `✅ [AI_FORGE]: Capability blueprint draft completed.`]);
     } catch (e) {
@@ -145,18 +145,18 @@ export default function ArsenalManager() {
 
   // --- 4. INJECTION & EVOLUTION ---
   const injectToArsenal = async () => {
-    if (!newTool.name || !config.url) return;
+    if (!newTool.name || !config?.url) return;
     setLoading(true);
     setDiagnosticLogs(p => [...p, `> [INJECT]: Committing ${newTool.name} to sector: ${newTool.sector}...`]);
     
     try {
-      const cleanUrl = config.url.replace(/\/$/, "");
+      const cleanUrl = config?.url.replace(/\/$/, "");
       await axios.post(`${cleanUrl}/api/v1/mission`, { 
           task: `Physically inject a new tool named ${newTool.name} into the ${newTool.sector} shard.` 
-      }, { headers: { "X-API-Key": config.key, 'ngrok-skip-browser-warning': '69420' } });
+      }, { headers: { "X-API-Key": config?.key, 'ngrok-skip-browser-warning': '69420' } });
       
       setDiagnosticLogs(p => [...p, `✅ [SUCCESS]: Tool ${newTool.name} absorbed into v60.5 shard.`]);
-      fetchArsenal(config.url, config.key);
+      fetchArsenal(config?.url, config?.key);
     } catch (e) {
       setDiagnosticLogs(p => [...p, `❌ [INJECTION_FAILED]: Verification mismatch.`]);
     } finally {
@@ -178,7 +178,7 @@ export default function ArsenalManager() {
             <Box size={20} className="text-[#00f2ff]" />
             <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Sovereign_Arsenal</span>
           </div>
-          <button onClick={() => fetchArsenal(config.url, config.key)} className="p-2 hover:bg-white/5 rounded-lg transition-all">
+          <button onClick={() => fetchArsenal(config?.url, config?.key)} className="p-2 hover:bg-white/5 rounded-lg transition-all">
              <RefreshCw size={14} className={loading ? "animate-spin text-[#00f2ff]" : "text-white/20"} />
           </button>
         </div>

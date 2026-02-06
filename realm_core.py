@@ -175,8 +175,8 @@ async def supervisor_node(state: RealmForgeState):
     ORCHESTRATOR: Supports Natural Language Command (NLC) parsing & Idempotency.
     v31.11: Integrated with 13-Silo Renormalized Lattice and absolute path enforcement.
     """
-    mid = state.get("mission_id")
-    locks = state.get("mission_locks", set())
+    mid = (state or {}).get("mission_id")
+    locks = (state or {}).get("mission_locks", set())
 
     # IDEMPOTENCY CHECK: Kill double-firing
     if mid in locks:
@@ -232,7 +232,7 @@ async def supervisor_node(state: RealmForgeState):
     new_locks = set(locks)
     new_locks.add(mid)
 
-    if data.get("intent") == "GENERAL_INQUIRY":
+    if (data or {}).get("intent") == "GENERAL_INQUIRY":
         return {
             "next_node": "synthesizer",
             "active_agent": "Mastermind",
@@ -240,16 +240,16 @@ async def supervisor_node(state: RealmForgeState):
             "intent": "GENERAL_INQUIRY",
             "mission_locks": new_locks,
             "messages": [
-                AIMessage(content=data.get("conversational_response", "Acknowledged."))
+                AIMessage(content=(data or {}).get("conversational_response", "Acknowledged."))
             ],
         }
 
-    primary_silo = data.get("primary_silo", "Architect")
-    fallback_silo = data.get("fallback_silo", "Architect")
+    primary_silo = (data or {}).get("primary_silo", "Architect")
+    fallback_silo = (data or {}).get("fallback_silo", "Architect")
     primary = get_industrial_specialist(primary_silo)
 
     invitees = []
-    for s in data.get("meeting_invitees", []):
+    for s in (data or {}).get("meeting_invitees", []):
         spec = get_industrial_specialist(s)
         if spec:
             invitees.append(spec["name"])
@@ -260,7 +260,7 @@ async def supervisor_node(state: RealmForgeState):
     return {
         "next_node": "planner",
         "intent": "INDUSTRIAL_STRIKE",
-        "semantic_params": data.get("semantic_params", {}),
+        "semantic_params": (data or {}).get("semantic_params", {}),
         "mission_locks": new_locks,
         "active_department": primary_silo,
         "fallback_department": fallback_silo,
@@ -294,9 +294,9 @@ async def planner_node(state: RealmForgeState):
     )
 
     mission = state["messages"][-1].content
-    agent_name = state.get("active_agent", "ForgeMaster")
-    dept = state.get("active_department", "Architect")
-    params = state.get("semantic_params", {})
+    agent_name = (state or {}).get("active_agent", "ForgeMaster")
+    dept = (state or {}).get("active_department", "Architect")
+    params = (state or {}).get("semantic_params", {})
 
     # v31.11 SUTURE: Passing ALL_TOOLS_LIST to satisfy registry signature and fix 500 error
     available_tools = get_tools_for_dept(dept, ALL_TOOLS_LIST)
@@ -321,12 +321,12 @@ async def planner_node(state: RealmForgeState):
     data = extract_json(res.content if hasattr(res, "content") else str(res))
 
     return {
-        "task_queue": data.get("sub_tasks", []),
+        "task_queue": (data or {}).get("sub_tasks", []),
         "next_node": "executor",
         "messages": [
             heartbeat,
             AIMessage(
-                content=f"ðŸ“‹ [PLAN_LOCKED]: Orchestrating kinetic strike with {len(data.get('sub_tasks', []))} tasks."
+                content=f"ðŸ“‹ [PLAN_LOCKED]: Orchestrating kinetic strike with {len((data or {}).get('sub_tasks', []))} tasks."
             ),
         ],
     }
@@ -334,26 +334,26 @@ async def planner_node(state: RealmForgeState):
 
 async def execution_node(state: RealmForgeState):
     """FORCE-KINETIC EXECUTOR: Physically triggers tools and logs artifact paths."""
-    agent = state.get("active_agent")
-    tasks = list(state.get("task_queue", []))
+    agent = (state or {}).get("active_agent")
+    tasks = list((state or {}).get("task_queue", []))
     messages = list(state["messages"])
-    found_artifacts = list(state.get("artifacts", []))
+    found_artifacts = list((state or {}).get("artifacts", []))
 
     if not tasks:
         return {"next_node": "validator"}
 
     for task in tasks:
-        tool_name = task.get("tool")
+        tool_name = (task or {}).get("tool")
 
         # REDUNDANCY HANDOFF PROTOCOL
         if tool_name == "HANDOFF":
-            new_silo = state.get("fallback_department", "Architect")
+            new_silo = (state or {}).get("fallback_department", "Architect")
             specialist = get_industrial_specialist(new_silo)
             handoff = {"from": state["active_department"], "to": new_silo}
             return {
                 "active_agent": specialist["name"] if specialist else "ForgeMaster",
                 "active_department": new_silo,
-                "handoff_history": state.get("handoff_history", []) + [handoff],
+                "handoff_history": (state or {}).get("handoff_history", []) + [handoff],
                 "next_node": "planner",
                 "messages": [
                     AIMessage(
@@ -364,7 +364,7 @@ async def execution_node(state: RealmForgeState):
 
         if tool_name in TOOLS:
             try:
-                args = task.get("args", {})
+                args = (task or {}).get("args", {})
                 # Production Path Sanitization
                 for k, v in args.items():
                     if isinstance(v, str) and "F:/" in v:
@@ -415,7 +415,7 @@ async def execution_node(state: RealmForgeState):
 
 async def validator_node(state: RealmForgeState):
     """THE IRONCLAD GATE: Forensic hash-verification and Lattice anchoring."""
-    artifacts = state.get("artifacts", [])
+    artifacts = (state or {}).get("artifacts", [])
     agent = "IronClad"
     v_logs = []
     clean_artifacts = [str(a).replace("\\", "/") for a in artifacts if "F:/" in str(a)]
@@ -478,14 +478,14 @@ async def auditor_node(state: RealmForgeState):
 async def synthesizer_node(state: RealmForgeState):
     """Final archival, Decision logging, and response delivery."""
     last_msg = state["messages"][-1].content
-    mid = state.get("mission_id", "UNK")
+    mid = (state or {}).get("mission_id", "UNK")
 
     # Log the successful decision for the Mastermind's memory
     try:
         DECISION_LOG.parent.mkdir(parents=True, exist_ok=True)
         with open(DECISION_LOG, "a", encoding="utf-8-sig") as f:
             f.write(
-                f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] [{mid}] SUCCESS - Silo: {state.get('active_department')}\n"
+                f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] [{mid}] SUCCESS - Silo: {(state or {}).get('active_department')}\n"
             )
     except Exception:
         pass
@@ -493,8 +493,8 @@ async def synthesizer_node(state: RealmForgeState):
     # Persist the completion to the Memory Engine
     await memory_kernel.commit_mission_event(
         mission_id=mid,
-        agent_id=state.get("active_agent"),
-        dept=state.get("active_department"),
+        agent_id=(state or {}).get("active_agent"),
+        dept=(state or {}).get("active_department"),
         action="MISSION_COMPLETE",
         result=last_msg,
     )

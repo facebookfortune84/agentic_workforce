@@ -114,15 +114,15 @@ export default function ArtifactStudio() {
 
   // --- LOAD ARTIFACT ---
   const loadArtifact = async (path: string) => {
-    if (!config.url || !path) return;
+    if (!config?.url || !path) return;
     setLoading(true);
 
     try {
-      const cleanUrl = config.url.replace(/\/$/, "");
+      const cleanUrl = config?.url.replace(/\/$/, "");
       const res = await axios.post(
         `${cleanUrl}/api/v1/io/read`,
         { path },
-        { headers: { "X-API-Key": config.key, "ngrok-skip-browser-warning": "69420" } }
+        { headers: { "X-API-Key": config?.key, "ngrok-skip-browser-warning": "69420" } }
       );
 
       if (res.data && res.data.content !== undefined) {
@@ -149,18 +149,18 @@ export default function ArtifactStudio() {
 
   // --- WRITE ARTIFACT ---
   const commitToDisk = async () => {
-    if (!currentFile.path || !config.url) return;
+    if (!currentFile.path || !config?.url) return;
     setLoading(true);
 
     try {
-      const cleanUrl = config.url.replace(/\/$/, "");
+      const cleanUrl = config?.url.replace(/\/$/, "");
       await axios.post(
         `${cleanUrl}/api/v1/io/write`,
         { path: currentFile.path, content: currentFile.content },
-        { headers: { "X-API-Key": config.key, "ngrok-skip-browser-warning": "69420" } }
+        { headers: { "X-API-Key": config?.key, "ngrok-skip-browser-warning": "69420" } }
       );
 
-      await scanLattice(config.url, config.key);
+      await scanLattice(config?.url, config?.key);
     } catch (e) {
       console.error("COMMIT_FAULT", e);
       alert("PHYSICAL_COMMIT_FAULT: Verification required.");
@@ -189,7 +189,7 @@ export default function ArtifactStudio() {
           </div>
 
           <button
-            onClick={() => scanLattice(config.url, config.key)}
+            onClick={() => scanLattice(config?.url, config?.key)}
             className="p-2 hover:bg-[#00f2ff]/20 rounded-lg transition-all"
             title="Refresh Vault"
             aria-label="Refresh Vault"

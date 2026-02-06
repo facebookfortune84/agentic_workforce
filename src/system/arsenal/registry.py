@@ -99,7 +99,7 @@ DEPARTMENT_TOOL_MAP = build_department_map()
 
 def get_tools_for_dept(dept_name: str) -> List[Callable]:
     """Returns all tools belonging to a department."""
-    return DEPARTMENT_TOOL_MAP.get(dept_name, [])
+    return (DEPARTMENT_TOOL_MAP or {}).get(dept_name, [])
 
 
 def get_swarm_roster() -> List[Dict[str, Any]]:

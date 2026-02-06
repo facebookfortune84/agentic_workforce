@@ -98,7 +98,7 @@ async def convert_currency(amount: float, from_currency: str, to_currency: str):
     try:
         pair = f'{from_currency.upper()}{to_currency.upper()}=X'
         data = yf.Ticker(pair).info
-        rate = data.get('regularMarketPrice') or data.get('currentPrice')
+        rate = (data or {}).get('regularMarketPrice') or (data or {}).get('currentPrice')
         
         if not rate:
             return f'[ERROR] Exchange rate for {pair} is currently unreachable.'
@@ -152,12 +152,12 @@ async def generate_corporate_invoice(client_name: str, invoice_number: str, item
         c.setFont('Helvetica', 10)
         subtotal = 0
         for item in items:
-            qty = float(item.get('qty', 1))
-            rate = float(item.get('price', 0))
+            qty = float((item or {}).get('qty', 1))
+            rate = float((item or {}).get('price', 0))
             line_total = qty * rate
             subtotal += line_total
             
-            c.drawString(60, y, str(item.get('desc', 'Industrial Service')))
+            c.drawString(60, y, str((item or {}).get('desc', 'Industrial Service')))
             c.drawString(350, y, str(qty))
             c.drawString(410, y, f'${rate:,.2f}')
             c.drawString(490, y, f'${line_total:,.2f}')
@@ -190,9 +190,9 @@ async def generate_project_budget(project_name: str, resources: List[Dict]):
         total_base = 0
         breakdown = []
         for r in resources:
-            cost = float(r.get('rate', 0)) * float(r.get('hours', 0))
+            cost = float((r or {}).get('rate', 0)) * float((r or {}).get('hours', 0))
             total_base += cost
-            breakdown.append(f"- {r.get('role', 'Unit')}: {r.get('hours')}hrs @ ${r.get('rate')}/hr = ${cost:,.2f}")
+            breakdown.append(f"- {(r or {}).get('role', 'Unit')}: {(r or {}).get('hours')}hrs @ ${(r or {}).get('rate')}/hr = ${cost:,.2f}")
         
         contingency = total_base * 0.15
         grand_total = total_base + contingency
@@ -220,7 +220,7 @@ async def get_crypto_price(symbol: str):
         symbol = symbol.upper().strip()
         ticker = f'{symbol}-USD'
         data = yf.Ticker(ticker).info
-        price = data.get('currentPrice') or data.get('regularMarketPrice')
+        price = (data or {}).get('currentPrice') or (data or {}).get('regularMarketPrice')
         
         if not price:
             return f'[ERROR] Price data for {symbol} is currently desynchronized.'

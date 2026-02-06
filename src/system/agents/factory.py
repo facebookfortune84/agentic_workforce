@@ -27,9 +27,9 @@ class AgentInstance:
         Generates the specialized system prompt for the LLM based 
         on the YAML attributes.
         """
-        persona = self.metadata.get("attributes", {})
-        comm_style = persona.get("communication_style", "Professional")
-        personality = ", ".join(persona.get("personality", []))
+        persona = self.(metadata or {}).get("attributes", {})
+        comm_style = (persona or {}).get("communication_style", "Professional")
+        personality = ", ".join((persona or {}).get("personality", []))
         
         prompt = (
             f"You are {self.name}, the {self.role} in the {self.department} department.\n"
@@ -40,7 +40,7 @@ class AgentInstance:
             f"You have access to the following tools in your arsenal: {', '.join(self.tools)}"
         )
         
-        if self.metadata.get("system_metadata", {}).get("god_mode_enabled"):
+        if self.(metadata or {}).get("system_metadata", {}).get("god_mode_enabled"):
             prompt += "\nGOD_MODE is ENABLED. You have full system override permissions."
             
         return prompt
@@ -73,11 +73,11 @@ class AgentFactory:
         
         # Standardizing the YAML structure into the instance
         return AgentInstance(
-            id=raw.get("identity", {}).get("employee_id", "GEN-0000"),
+            id=(raw or {}).get("identity", {}).get("employee_id", "GEN-0000"),
             name=manifest["name"],
-            role=raw.get("professional", {}).get("role_title", "Specialist"),
+            role=(raw or {}).get("professional", {}).get("role_title", "Specialist"),
             department=manifest["department"],
-            backstory=raw.get("attributes", {}).get("backstory", ""),
+            backstory=(raw or {}).get("attributes", {}).get("backstory", ""),
             tools=manifest["tools"],
             metadata=raw
         )

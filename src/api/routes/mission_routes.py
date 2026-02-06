@@ -54,9 +54,9 @@ async def mission(req: MissionRequest, lic = Depends(get_license)):
                 if node_name == "__end__":
                     continue
 
-                agent = node_state.get("active_agent") or node_name.upper()
-                dept = node_state.get("active_department", "Architect")
-                msgs = node_state.get("messages", [])
+                agent = (node_state or {}).get("active_agent") or node_name.upper()
+                dept = (node_state or {}).get("active_department", "Architect")
+                msgs = (node_state or {}).get("messages", [])
 
                 # Telemetry Update
                 await manager.broadcast({
@@ -64,7 +64,7 @@ async def mission(req: MissionRequest, lic = Depends(get_license)):
                     "node": node_name.upper(),
                     "agent": agent,
                     "dept": dept,
-                    "handoffs": node_state.get("handoff_history", []),
+                    "handoffs": (node_state or {}).get("handoff_history", []),
                 })
 
                 # 5. Energy Tracking (Usage Tracker Suture)

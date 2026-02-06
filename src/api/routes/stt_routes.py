@@ -57,7 +57,7 @@ async def speech_to_text(
             logger.warning(f"âš ï¸ [STT] Temp file cleanup failed: {temp_path}")
 
         return {
-            "text": transcription.get("text", "")
+            "text": (transcription or {}).get("text", "")
         }
 
     except Exception as e:

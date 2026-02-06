@@ -146,7 +146,7 @@ async def download_file(url: str, save_path: str):
     try:
         target = DATA_DIR / save_path.replace('data/', '').lstrip('/')
         async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
-            resp = await client.get(url)
+            resp = await (client or {}).get(url)
             if resp.status_code == 200:
                 os.makedirs(target.parent, exist_ok=True)
                 target.write_bytes(resp.content)
@@ -170,7 +170,7 @@ async def generate_dockerfile(tech_stack: str, port: int=8000):
         'node': f'FROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install --production\nCOPY . .\nEXPOSE {port}\nCMD ["npm", "start"]',
         'static': f'FROM nginx:alpine\nCOPY . /usr/share/nginx/html\nEXPOSE 80'
     }
-    content = templates.get(tech_stack.lower(), templates['python'])
+    content = (templates or {}).get(tech_stack.lower(), templates['python'])
     path = DATA_DIR / 'docs' / 'Dockerfile'
     path.write_text(content, encoding='utf-8')
     return f'âœ… Dockerfile generated for {tech_stack} in data/docs/'

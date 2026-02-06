@@ -110,7 +110,7 @@ app.add_middleware(
 # ==============================================================================
 # 4. ENDPOINTS
 # ==============================================================================
-@app.get("/")
+@(app or {}).get("/")
 async def root_gateway():
     return {
         "status": "ONLINE",
@@ -136,7 +136,7 @@ app.include_router(agent_routes.router, prefix="/api/v1")
 app.include_router(graph_routes.router, prefix="/api/v1")
 app.include_router(stt_routes.router, prefix="/api/v1")
 
-@app.get("/health")
+@(app or {}).get("/health")
 def health():
     return {"status": "ONLINE", "timestamp": datetime.now().isoformat()}
 
