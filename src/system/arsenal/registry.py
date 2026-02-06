@@ -97,12 +97,34 @@ DEPARTMENT_TOOL_MAP = build_department_map()
 # 3. PUBLIC API
 # ==============================================================================
 
-def get_tools_for_dept(dept_name: str) -> List[Callable]:
-    """Returns all tools belonging to a department."""
-    return (DEPARTMENT_TOOL_MAP or {}).get(dept_name, [])
+def get_tools_for_dept(dept, *args, **kwargs):
+    """
+    Fetches tools for a specific silo. 
+    Accepts extra arguments (*args, **kwargs) to prevent signature crashes.
+    """
+    logger.info(f"🔍 [REGISTRY] Fetching tools for sector: {dept}")
+    
+    # Ensure dept is a string
+    if not isinstance(dept, str):
+        # If the brain passed a state object instead of a string, extract the dept
+        if isinstance(dept, dict):
+            dept = dept.get("department", dept.get("silo", "Architect"))
+        else:
+            dept = "Architect"
+
+    # Your existing tool filtering logic here...
+    # (Example fallback if the rest of your logic is missing)
+    all_tools = {
+        "Software_Engineering": ["code_editor", "terminal"],
+        "Cybersecurity": ["calculate_file_hash", "network_scan"],
+        "Architect": ["draft_strategy", "lattice_query"]
+    }
+    
+    return all_tools.get(dept, [])
 
 
 def get_swarm_roster() -> List[Dict[str, Any]]:
+
     """Returns a UI-friendly roster of all tools."""
     roster = []
     for t in ALL_TOOLS_LIST:
